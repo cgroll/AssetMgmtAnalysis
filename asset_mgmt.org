@@ -1,0 +1,22 @@
+#+TITLE: Asset management using MATLAB
+#+AUTHOR: Christian Groll
+
+#+CATEGORY: financial_econometrics, matlab
+#+TAGS: Rbloggers, asset_mgmt, Markowitz
+#+DESCRIPTION: analyse performance of Markowitz portfolios 
+
+
+#+OPTIONS: toc:t
+#+OPTIONS: todo:nil
+#+OPTIONS: tags:nil
+#+OPTIONS: H:5
+#+OPTIONS: skip:on
+#+OPTIONS: ^:nil
+
+#+PROPERTY: exports both
+#+PROPERTY: results silent
+#+PROPERTY: eval no-export
+#+PROPERTY: tangle yes
+#+PROPERTY: dir ./src_results/
+
+#+PROPERTY: session R_markowitz_R
