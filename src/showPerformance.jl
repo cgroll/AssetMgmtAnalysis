@@ -1,3 +1,5 @@
+invsToAnalyze = "data/emp_gmvWgts.csv"
+
 ## load general data and packages
 include("/home/chris/research/AssetMgmtAnalysis/src/setup.jl")
 
@@ -12,5 +14,7 @@ include("/home/chris/research/AssetMgmtAnalysis/src/setup.jl")
 ## sectorsStr                    348x2 DataFrame
 
 ## load current weights to be analyzed
-invs = AssetMgmt.readInvestments("data/emp_gmvWgts.csv")
+invs = AssetMgmt.readInvestments(invsToAnalyze)
 
+## apply filter
+fltWgts = AssetMgmt.regularRB(invs, discRet, freq=30)
