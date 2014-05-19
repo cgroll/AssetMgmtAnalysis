@@ -80,20 +80,9 @@ AssetMgmt.plotPfDistribution(pfRet,
 ## sector performances ##
 #########################
 
-sectorWgts = AssetMgmt.groupAssets(invs, assetsInSector)
-sectPerf = AssetMgmt.sectorPerformances(invs,
-                                        discRet[idx(invs), :],
-                                        assetsInSector)
-
-
-eqWgtedSectorPortf = AssetMgmt.groupVars(discRet, assetsInSector,
-                                         x -> mean(x, 2))
-
-
-plot(x=[1:size(sectorRets, 1)], y=core(sectorRets)[:, 1])
-
-k = plot(x=rand(10), y=rand(10), Geom.line)
-
-k = AssetMgmt.plot(sectorRets)
+AssetMgmt.plotSectorAnalysis(fltInvs,
+                             discRetShort,
+                             assetsInSector,
+                             strName = strategyName)
 
 
