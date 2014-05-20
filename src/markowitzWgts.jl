@@ -13,9 +13,11 @@ cutoff = 1
 muSigmaEstimator = AssetMgmt.empiricalEstimator
 minObs = 400
 rollingWindow = false
+intRatesArr = core(intRates)
 
 ## choose response strategy
 responseFunc = AssetMgmt.gmv
+responseFunc = AssetMgmt.maxSharpeRatio
 
 t = Task(() -> AssetMgmt.produceMoments(discRet,
                                         muSigmaEstimator,
@@ -33,11 +35,12 @@ for x in t
     (mus, covMatr, index) = x
     println(index)
     dates[index] = true
-    wgts[index, :] = responseFunc(mus, covMatr)
+    ## wgts[index, :] = responseFunc(mus, covMatr)
+    wgts[index, :] = responseFunc(mus, covMatr, intRatesArr[index-1])
 end
 
 wgtsDf = AssetMgmt.composeDataFrame(wgts[dates, :], names(discRet))
 invs = AssetMgmt.Investments(wgtsDf, idx(discRet)[dates])
 
 ## save weights to disc
-AssetMgmt.writeInvestments("data/emp_gmvWgts.csv", invs)
+AssetMgmt.writeInvestments("data/emp_maxSrWgts.csv", invs)

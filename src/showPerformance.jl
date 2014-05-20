@@ -1,6 +1,9 @@
 invsToAnalyze = "data/emp_gmvWgts.csv"
 strategyName = :emp_gmvWgts
 
+invsToAnalyze = "data/emp_maxSrWgts.csv"
+strategyName = :emp_maxSrWgts
+
 ## load general data and packages
 include("/home/chris/research/AssetMgmtAnalysis/src/setup.jl")
 include("/home/chris/.julia/v0.3/AssetMgmt/src/AssetMgmt.jl")
