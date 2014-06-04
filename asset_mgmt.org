@@ -1,22 +1,119 @@
-#+TITLE: Asset management using MATLAB
+#+TITLE: Asset pricing and risk based asset management
 #+AUTHOR: Christian Groll
 
-#+CATEGORY: financial_econometrics, matlab
-#+TAGS: Rbloggers, asset_mgmt, Markowitz
+#+CATEGORY: financial_econometrics
+#+TAGS: asset_mgmt, Markowitz, presentation
 #+DESCRIPTION: analyse performance of Markowitz portfolios 
 
+#+LaTeX_CLASS: beamer
+#+BEAMER_THEME: Frankfurt
 
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LaTeX_HEADER: \usepackage{geometry}
+#+LaTeX_HEADER: \usepackage{subfigure}
+#+LaTeX_HEADER: \usepackage{graphicx}
+#+LaTeX_HEADER: \usepackage{caption}
+
+#+OPTIONS: d:nil
+#+OPTIONS: H:2
 #+OPTIONS: toc:t
-#+OPTIONS: todo:nil
+#+OPTIONS: todo:t
 #+OPTIONS: tags:nil
-#+OPTIONS: H:5
 #+OPTIONS: skip:on
 #+OPTIONS: ^:nil
+#+OPTIONS: eval:never-export
+#+EXCLUDE_TAGS: notes
 
 #+PROPERTY: exports both
-#+PROPERTY: results silent
-#+PROPERTY: eval no-export
+#+PROPERTY: results output
 #+PROPERTY: tangle yes
 #+PROPERTY: dir ./src_results/
 
-#+PROPERTY: session R_markowitz_R
+#+BEGIN_SRC comment :eval never :exports none
+the following line does include toc after each section!
+however, preview-latex does not work with it!
+#+startup: beamer
+#+LATEX_HEADER: \setbeamertemplate{footline}[page number] 
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+#+LATEX_HEADER: \subtitle{{\color{red} work in progress}}
+#+END_SRC
+
+* Asset pricing - consumption based model
+
+** Basic assumption 
+
+- people are *expected utility maximizers*: with future cash flows $X$
+  and utility function $U$, the problem is
+
+$$\underset{X}{\max}\ \mathbb{E}[U(X)]$$
+
+
+- people are *risk-averse*: utility $U$ increases with money ($U'>0$),
+  but marginal utility of money decreases ($U''<0$)
+
+** Concave utility
+- due to concavity, uncertainty in future cash flows decreases utility
+  (for certain given expected value)
+
+include figure
+
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item[$\Rightarrow$] smooth and stable future cash flows are preferred 
+   \end{itemize}
+#+END_LaTeX
+
+
+** Basic assumption notes                                             :notes:
+
+- builds on Cochrane's consumption based model
+
+- any additional euro to profits is worth less utility than any
+  additional lost euro -> better formulation
+
+** Cash flow determinants
+
+#+BEGIN_LaTeX
+   What are the determinants of your future cash flow?
+   \begin{itemize}
+   \item<+-> assets: prices, dividends
+     \begin{itemize}
+     \item[$\Rightarrow$]<+-> 
+       higher asset volatility needs to be compensated through higher expected returns (Markowitz)
+     \item[$\Rightarrow$]<+-> too simplistic: doesn't take into account additional drivers of
+       future volatility!
+     \end{itemize}
+   \item<+-> job income 
+   \item<+-> catastrophic events
+   \end{itemize}
+#+END_LaTeX
+
+** next sl
+You want future cash flows to be smooth and not volatile!
+-> job loss should be smoothed through asset prices
+-> assets should be valuable when you need them
+
+** Next slides
+You want assets that are valuable at the time that you need them! 
+
+10 year bond, where you do not need the money within the next 10
+years.
+
+"When" could mean:
+- a given point in time -> evolution up to this event does not matter 
+- a given state of nature -> need to sell asset only when I lose job 
+
+** Examples
+
+- going back to Pakistan -> exchange risk
+- house near river -> 
+- job loss
+- oil industry? 
+- single asset with high idiosyncratic risk -> you want to get
+  compensated for risk
+
+* Julia / github
+
+** TimeData package
+
+introducing my package
