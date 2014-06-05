@@ -43,23 +43,27 @@ however, preview-latex does not work with it!
 ** Basic assumption 
 
 - people are *expected utility maximizers*: with future cash flows $X$
-  and utility function $U$, the problem is
+  and utility function $U$, the optimization problem is
 
-$$\underset{X}{\max}\ \mathbb{E}[U(X)]$$
+$$\underset{\xi}{\max}\ \mathbb{E}[U(X(\xi))]$$
 
 
 - people are *risk-averse*: utility $U$ increases with money ($U'>0$),
   but marginal utility of money decreases ($U''<0$)
 
 ** Concave utility
-- due to concavity, uncertainty in future cash flows decreases utility
-  (for certain given expected value)
+- due to concavity, uncertainty in future cash flows negatively
+  affects expected utility
 
-include figure
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/concave_utility.jpg}
+#+LATEX: \end{figure}
 
 #+BEGIN_LaTeX
    \begin{itemize}
-   \item[$\Rightarrow$] smooth and stable future cash flows are preferred 
+   \item[$\Rightarrow$] for given expectation, cash flow distributions with 
+     lower volatility are preferred 
    \end{itemize}
 #+END_LaTeX
 
@@ -71,46 +75,141 @@ include figure
 - any additional euro to profits is worth less utility than any
   additional lost euro -> better formulation
 
-** Cash flow determinants
+** Consequences for cash flow components
 
 #+BEGIN_LaTeX
-   What are the determinants of your future cash flow?
+   \action<+->{Components of future cash flows:}
    \begin{itemize}
    \item<+-> assets: prices, dividends
      \begin{itemize}
-     \item[$\Rightarrow$]<+-> 
-       higher asset volatility needs to be compensated through higher expected returns (Markowitz)
-     \item[$\Rightarrow$]<+-> too simplistic: doesn't take into account additional drivers of
-       future volatility!
+     \item[$\Rightarrow$]<+-> if unique component: higher asset
+       volatility needs to be compensated through higher expected returns
      \end{itemize}
-   \item<+-> job income 
-   \item<+-> catastrophic events
    \end{itemize}
 #+END_LaTeX
 
-** next sl
-You want future cash flows to be smooth and not volatile!
--> job loss should be smoothed through asset prices
--> assets should be valuable when you need them
+** Consequences for cash flow components
 
-** Next slides
+If future cash flow is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff.jpg}
+#+LATEX: \end{figure}
+
+** Cash flow components
+
+#+BEGIN_LaTeX
+   Components of future cash flows:
+   \begin{itemize}
+   \item<+-> assets: prices, dividends
+     \begin{itemize}
+     \item[$\Rightarrow$] if unique component: higher asset
+       volatility needs to be compensated through higher expected returns
+       (\alert{Markowitz})
+     \item[$\Rightarrow$]<+-> \alert{too simplistic}: asset cash flows
+       are not the only determinant of your future cash flows
+     \end{itemize}
+   \item<+-> job income 
+   \item<+-> losses due to catastrophic events
+   \item[$\Rightarrow$]<+-> utility is derived from \alert{overall} cash
+     flow distribution
+   \item[$\Rightarrow$]<.->uncertainty in \alert{overall} cash flow
+     distribution should be minimized: smoothing over all components
+   \end{itemize}
+#+END_LaTeX
+
+** Notes                                                              :notes:
+CAPM could already be derived without additional components
+- minimizing correlation 
+- everybody invests in correlation minimizing portfolios 
+- idiosyncratic risks get diversified away
+- affecting prices and hence returns: compensation for systemic risk
+  only 
+
+** Example: choose your preferred asset
+
+Idea:
+- smooth future cash flows over all components
+- assets should be valuable when you need them
+
+Examples:
+- job loss should be smoothed through asset prices 
+  -> job loss during recession
+  -> favorable if asset prices are high during recessions
+
+Which asset do you value more?
+
+
+** Conclusion
 You want assets that are valuable at the time that you need them! 
 
-10 year bond, where you do not need the money within the next 10
-years.
-
 "When" could mean:
-- a given point in time -> evolution up to this event does not matter 
+- a given point in time -> evolution up to this event does not matter
+  (10 year bond)
 - a given state of nature -> need to sell asset only when I lose job 
 
 ** Examples
 
-- going back to Pakistan -> exchange risk
-- house near river -> 
+- house near river -> no stocks of insurance companies
 - job loss
+  - no stocks that follow the market
+  - no stocks of the company you are working at
+- going back to Pakistan -> exchange risk
 - oil industry? 
 - single asset with high idiosyncratic risk -> you want to get
-  compensated for risk
+  compensated for risk (if you are the only one at the market?)
+
+** Risks
+- risks that you have and everybody else -> they give higher expected
+  returns to compensate you
+- risks that only you have -> avoid assets that are correlated with
+  them 
+- risks that everybody else has, but you don't
+
+** Consequences
+- you have to think first in which circumstances you need money
+- if you have different concerns than the market, you could get higher
+  expected returns that translate into comparatively even higher
+  utility 
+- allegedly, some common risk factors could be identified: Fama /
+  French 
+
+** Fama French
+Where is volatility compensation??
+
+
+** Forecasting returns
+- allegedly, according to Cochrane, future annual returns could be
+  forecast through dividend price ratios 
+- consequences for higher frequency returns?
+  - simple shift of means is not sufficient!
+
+* Markowitz
+
+** Overconfidence
+expert vs statistical overconfidence
+
+** Problems with utility
+- volatility is only one way to measure uncertainty -> skewness,
+  worst-case, ...
+- problems with utility theory: inconsistent for small stakes / large
+  stakes bets 
+- how does Markowitz work with / relate to asset pricing?
+  - for risks that everybody else has but you don't, Markowitz will
+    correctly find a good mean-vola ratio and invests into them
+  - for risks that only you have, Markowitz does not notice that
+    prevailing risk-return ratio is not sufficient to compensate you
+    for it
+  - risks that everybody has: 
+    - usually picked due to better risk-return ratio
+    - but: high correlation to other assets could make good
+      risk-return ratio undesired
+- asset pricing could generate improved moment estimation?
+
+** Using asset pricing theory for better moment estimates
+
+** 
 
 * Julia / github
 
