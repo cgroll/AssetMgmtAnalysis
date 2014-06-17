@@ -1,5 +1,6 @@
-#+TITLE: Asset pricing and risk based asset management
+#+TITLE: Portfolio selection and the problem of estimating return moments
 #+AUTHOR: Christian Groll
+#+DATE: 1. July 2014
 
 #+CATEGORY: financial_econometrics
 #+TAGS: asset_mgmt, Markowitz, presentation
