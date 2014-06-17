@@ -1,4 +1,4 @@
-#+TITLE: Portfolio selection and the problem of estimating return moments
+#+TITLE: Optimal portfolio selection and the problem of estimating return moments
 #+AUTHOR: Christian Groll
 #+DATE: 1. July 2014
 
@@ -43,8 +43,8 @@ however, preview-latex does not work with it!
 
 ** Basic assumption 
 
-- people are *expected utility maximizers*: with future cash flows $X$
-  and utility function $U$, the optimization problem is
+- people are *expected utility maximizers*: with future wealth $X$ and
+  utility function $U$, the optimization problem is
 
 $$\underset{\xi}{\max}\ \mathbb{E}[U(X(\xi))]$$
 
@@ -53,7 +53,7 @@ $$\underset{\xi}{\max}\ \mathbb{E}[U(X(\xi))]$$
   but marginal utility of money decreases ($U''<0$)
 
 ** Concave utility
-- due to concavity, uncertainty in future cash flows negatively
+- due to concavity, uncertainty inherent to future wealth negatively
   affects expected utility
 
 #+LATEX: \begin{figure}[htbp]
@@ -76,47 +76,47 @@ $$\underset{\xi}{\max}\ \mathbb{E}[U(X(\xi))]$$
 - any additional euro to profits is worth less utility than any
   additional lost euro -> better formulation
 
-** Consequences for cash flow components
+** Consequences for wealth components
 
 #+BEGIN_LaTeX
-   \action<+->{Components of future cash flows:}
+   \action<+->{Components of future wealth:}
    \begin{itemize}
    \item<+-> assets: prices, dividends
      \begin{itemize}
-     \item[$\Rightarrow$]<+-> if unique component: higher asset
+     \item[$\Rightarrow$]<+-> if assets are unique component: higher asset
        volatility needs to be compensated through higher expected returns
      \end{itemize}
    \end{itemize}
 #+END_LaTeX
 
-** Consequences for cash flow components
+** Consequences for wealth components
 
-If future cash flow is completely determined through assets:
+If future wealth is completely determined through assets:
 
 #+LATEX: \begin{figure}[htbp]
 #+LATEX:     \centering
 #+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff.jpg}
 #+LATEX: \end{figure}
 
-** Cash flow components
+** wealth components
 
 #+BEGIN_LaTeX
-   Components of future cash flows:
+   Components of future wealth:
    \begin{itemize}
    \item<+-> assets: prices, dividends
      \begin{itemize}
-     \item[$\Rightarrow$] if unique component: higher asset
+     \item[$\Rightarrow$] if assets are unique component: higher asset
        volatility needs to be compensated through higher expected returns
        (\alert{Markowitz})
      \item[$\Rightarrow$]<+-> \alert{too simplistic}: asset cash flows
-       are not the only determinant of your future cash flows
+       are not the only determinant of your future wealth
      \end{itemize}
    \item<+-> job income 
    \item<+-> losses due to catastrophic events
    \item[$\Rightarrow$]<+-> utility is derived from \alert{overall} cash
      flow distribution
-   \item[$\Rightarrow$]<.->uncertainty in \alert{overall} cash flow
-     distribution should be minimized: smoothing over all components
+   \item[$\Rightarrow$]<.->volatility of \alert{overall} wealth
+     distribution should be diversified away: smoothing over all components
    \end{itemize}
 #+END_LaTeX
 
@@ -128,45 +128,53 @@ CAPM could already be derived without additional components
 - affecting prices and hence returns: compensation for systemic risk
   only 
 
-** Example: choose your preferred asset
+** Examples: choose your preferred asset
+Given two assets *A* and *B* with *identical* return distributions
+($F_{A}\sim F_{B}$), which one would you prefer?
 
+- You are working for Microsoft. Stock A is of Microsoft, while
+  stock B is of Walmart.
+
+- You have property within an earthquake zone. Stock A is of Walmart,
+  stock B is of a large reinsurance company.
+
+*** Basic investment rule
+Given equal payoff distributions, you should prefer assets that are
+valuable when you need them. 
+
+In other words: demand compensation
+Otherwise: 
+
+
+** Explanation of when                                                :notes:
 Idea:
-- smooth future cash flows over all components
+- smooth future wealth over all components
 - assets should be valuable when you need them
-
-Examples:
-- job loss should be smoothed through asset prices 
-  -> job loss during recession
-  -> favorable if asset prices are high during recessions
-
-Which asset do you value more?
-
-
-** Conclusion
-You want assets that are valuable at the time that you need them! 
 
 "When" could mean:
 - a given point in time -> evolution up to this event does not matter
   (10 year bond)
 - a given state of nature -> need to sell asset only when I lose job 
 
-** Examples
 
-- house near river -> no stocks of insurance companies
-- job loss
-  - no stocks that follow the market
-  - no stocks of the company you are working at
-- going back to Pakistan -> exchange risk
-- oil industry? 
+** Explanation of CAPM
+Examples:
+- job loss should be smoothed through asset prices 
+  -> job loss during recession
+  -> favorable if asset prices are high during recessions
+
+What about betas? Why is idiosyncratic risk not compensated? Would you
+want to get compensated for it?
 - single asset with high idiosyncratic risk -> you want to get
   compensated for risk (if you are the only one at the market?)
 
 ** Risks
 - risks that you have and everybody else -> they give higher expected
-  returns to compensate you
+  returns to compensate you!
 - risks that only you have -> avoid assets that are correlated with
-  them 
-- risks that everybody else has, but you don't
+  them!
+- risks that everybody else has, but you don't: investment
+  opportunity! 
 
 ** Consequences
 - you have to think first in which circumstances you need money
