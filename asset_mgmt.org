@@ -95,7 +95,53 @@ If future wealth is completely determined through assets:
 
 #+LATEX: \begin{figure}[htbp]
 #+LATEX:     \centering
-#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff.jpg}
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02.jpg}
+#+LATEX: \end{figure}
+
+** Consequences for wealth components
+
+If future wealth is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(1).jpg}
+#+LATEX: \end{figure}
+
+** Consequences for wealth components
+
+If future wealth is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(2).jpg}
+#+LATEX: \end{figure}
+
+** Consequences for wealth components
+
+If future wealth is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(3).jpg}
+#+LATEX: \end{figure}
+
+
+** Consequences for wealth components
+
+If future wealth is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(4).jpg}
+#+LATEX: \end{figure}
+
+** Consequences for wealth components
+
+If future wealth is completely determined through assets:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(5).jpg}
 #+LATEX: \end{figure}
 
 ** wealth components
