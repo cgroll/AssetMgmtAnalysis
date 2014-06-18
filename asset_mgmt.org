@@ -41,6 +41,14 @@ however, preview-latex does not work with it!
 
 * Asset pricing - consumption based model
 
+** Motivation                                                         :notes:
+
+- asset pricing / return predictability usually only slightly referred
+  to 
+- link to Benjamin's talk 
+  - compared to his results, my talk will be quite unimpressive
+  - think about basics: what patterns exist in first moments of assets 
+
 ** Basic assumption 
 
 - people are *expected utility maximizers*: with future wealth $X$ and
@@ -51,6 +59,11 @@ $$\underset{\xi}{\max}\ \mathbb{E}[U(X(\xi))]$$
 
 - people are *risk-averse*: utility $U$ increases with money ($U'>0$),
   but marginal utility of money decreases ($U''<0$)
+
+** Risk-aversion                                                      :notes:
+"We dislike vast uncertainty in lifetime wealth because a dollar that
+helps us avoid poverty is more valuable than a dollar that helps us
+become very rich." \cite{rv_rabin_2000_risk_aversion_expected_theory} 
 
 ** Concave utility
 - due to concavity, uncertainty inherent to future wealth negatively
@@ -137,110 +150,222 @@ If future wealth is completely determined through assets:
 
 ** Consequences for wealth components
 
-If future wealth is completely determined through assets:
+If all market participants derive the same utility:
 
 #+LATEX: \begin{figure}[htbp]
 #+LATEX:     \centering
 #+LATEX:     \includegraphics[width=0.6\linewidth]{unreplicatable_pics/return_risk_tradeoff_02(5).jpg}
 #+LATEX: \end{figure}
 
-** wealth components
+$\Rightarrow$ assets have *different expected returns*, but *equal
+expected utility* 
+
+** Notes                                                              :notes:
+Picture only shows what future wealth is worth to me. Prices would be
+determined through supply and demand at the market. 
+
+If prices coincide with my own appreciation, both assets have
+different expected returns, but equal expected utility.
+
+Also: what happens, if volatility changes, while I already have the
+asset? 
+- price decreases
+- given new price level, expected return increases
+- given old price level, expected return stays the same, but
+  volatility has increased
+
+** Wealth components
 
 #+BEGIN_LaTeX
    Components of future wealth:
    \begin{itemize}
    \item<+-> assets: prices, dividends
      \begin{itemize}
-     \item[$\Rightarrow$] if assets are unique component: higher asset
+     \item[$\Rightarrow$] if assets are unique component: higher portfolio
        volatility needs to be compensated through higher expected returns
        (\alert{Markowitz})
+     \item[$\Rightarrow$]<+-> if all market participants hold all assets:
+       \begin{itemize}
+       \item portfolio volatility directly depends on asset correlations
+       \item compensation for systemic risk only (\alert{CAPM})
+       \end{itemize}
      \item[$\Rightarrow$]<+-> \alert{too simplistic}: asset cash flows
        are not the only determinant of your future wealth
      \end{itemize}
    \item<+-> job income 
    \item<+-> losses due to catastrophic events
    \item[$\Rightarrow$]<+-> utility is derived from \alert{overall} cash
-     flow distribution
-   \item[$\Rightarrow$]<.->volatility of \alert{overall} wealth
-     distribution should be diversified away: smoothing over all components
+     flow distribution: hedge individual components to diminish overall
+     volatility 
    \end{itemize}
 #+END_LaTeX
 
-** Notes                                                              :notes:
-CAPM could already be derived without additional components
-- minimizing correlation 
-- everybody invests in correlation minimizing portfolios 
-- idiosyncratic risks get diversified away
-- affecting prices and hence returns: compensation for systemic risk
-  only 
 
 ** Examples: choose your preferred asset
 Given two assets *A* and *B* with *identical* return distributions
 ($F_{A}\sim F_{B}$), which one would you prefer?
 
-- You are working for Microsoft. Stock A is of Microsoft, while
-  stock B is of Walmart.
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item<+-> You are working for Microsoft. Stock A is of Microsoft, while
+     stock B is of Walmart.
+   \item<+-> You have property within an earthquake zone. Stock A is of
+     Walmart, stock B is of a large reinsurance company.
+   \end{itemize}
+   
+   \begin{block}{Investment rule}<+->
+     All other things equal, you prefer assets that are valuable when you
+     need them.
+   \end{block}
+#+END_LaTeX
 
-- You have property within an earthquake zone. Stock A is of Walmart,
-  stock B is of a large reinsurance company.
 
-*** Basic investment rule
-Given equal payoff distributions, you should prefer assets that are
-valuable when you need them. 
-
-In other words: demand compensation
-Otherwise: 
-
-
-** Explanation of when                                                :notes:
-Idea:
-- smooth future wealth over all components
-- assets should be valuable when you need them
+** Further explanation of "when"                                      :notes:
+In other words: if an asset tends to have its low price events exactly
+when you would need it, then you would require compensation for this
+fact. 
 
 "When" could mean:
 - a given point in time -> evolution up to this event does not matter
   (10 year bond)
 - a given state of nature -> need to sell asset only when I lose job 
 
+** Three types of risk
+Risks, that
+- *only you have*, but nobody else: assets correlated with your risk
+  generate lower expected utility
+- *you and everybody else has*: assets correlated with these risks
+  exhibit higher expected returns to cause same level of utility
+- *everybody else has, but you don't*: assets correlated with these
+  risks exhibit higher expected returns, and also generate higher
+  levels of utility $\Rightarrow$ *investment opportunity*
 
-** Explanation of CAPM
-Examples:
-- job loss should be smoothed through asset prices 
-  -> job loss during recession
-  -> favorable if asset prices are high during recessions
+** CAPM remarks                                                       :notes:
 
-What about betas? Why is idiosyncratic risk not compensated? Would you
-want to get compensated for it?
-- single asset with high idiosyncratic risk -> you want to get
-  compensated for risk (if you are the only one at the market?)
+Risks that only you have: idiosyncratic risk
+- not compensated
+- assume you are holding single asset
+  - single asset with $\beta=0$ 
+  - asset volatility largely drives overall volatility of utility
+  - you would want compensation on this risk!
 
-** Risks
-- risks that you have and everybody else -> they give higher expected
-  returns to compensate you!
-- risks that only you have -> avoid assets that are correlated with
-  them!
-- risks that everybody else has, but you don't: investment
-  opportunity! 
+CAPM holds, if all wealth arises from assets only, and all investors
+invest in all assets. If we switch to a world with multiple wealth
+components, should we still expect risk premiums on $\beta$ values?
+- assets still could make up a large fraction of overall wealth
+- and: high $\beta$ values also correlate with other important
+  components: job!
 
-** Consequences
-- you have to think first in which circumstances you need money
-- if you have different concerns than the market, you could get higher
-  expected returns that translate into comparatively even higher
-  utility 
-- allegedly, some common risk factors could be identified: Fama /
-  French 
+Risks that everybody has: intuitive $\beta$ explanation
+- recession increases likelihood of job losses
+- in case of job loss, fall back on assets
+- recession also decreases asset prices
+- hence: assets are comparatively worthless when they are needed most 
+- extra compensation
+
+** Riskmanagement                                                     :notes:
+Also, it should matter to you, when you exceed your value-at-risk ->
+Re-financing costs
+
+** Consequences for Markowitz
+1. you are not only interested in $\mu$ and $\Sigma$, but also in the
+  dependency between your portfolio and your other risks
+-> sole $\mu$-$\Sigma$ optimization is not enough!
+-> how do we incorporate this into Markowitz
+
+2. knowledge about other people's risks could improve our estimation
+   of $\mu$ and $\Sigma$ -> assets that relate to risks of everybody
+   should exhibit higher returns
+
+3. if you have different concerns than the market, you could get
+   higher expected returns that translate into comparatively even
+   higher utility
+
+** General problem
+Maximize expect utility over all components:
+- model each component (job loss, earthquake, child birth)
+- or: penalize unfavorable dependencies (risk neutral probabilities) 
+- is expected utility really the best approach anyways?
+
+** Pitfalls of utility theory
+- in our models risk aversion usually is captured through concave
+  utility function over wealth
+- problem: \cite{rv_rabin_2000_risk_aversion_expected_theory}
+  - turning down a modest-stakes gamble means that the marginal
+    utility of money must diminish very quickly for small changes in
+    wealth
+  - anything but virtual risk neutrality over modest stakes implies
+    manifestly unrealistic risk aversion over large stakes 
+
+$\Rightarrow$ utility theory unable to replicate human behavior over
+large range of wealth levels?
+
+** paper name                                                         :notes:
+Risk aversion and expected-utility theory: A calibration theorem.
+
+** Decay of marginal utility of money
+*** Question 
+How much is the 100th dollar worth compared to the 1000th?
+
+$$ U(\$(100)) \cdot c = U(\$(1000)) $$
+
+*** proceed with list without box                           :B_ignoreheading:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :END:
+You have 100\$. Let's assume that you would turn down the following
+game:
+- heads: you *lose* 10\$
+- tails: you *win* 11\$
+What can be inferred about the decay of marginal utility of money? 
+
+** Example:
+
+
+
+Picture
+
+** Problem: utility function
+
+\begin{align*}
+10\cdot U(\$(91)) &>\sum_{i=91}^{100} U(\$(i)) \\
+&=\sum_{i=101}^{111} U(\$(i)) \\
+&> 11\cdot U(\$(111))
+\end{align*}
+
+decay of money:
+$$U(\$(91)) \frac{10}{11}> U(\$(111))$$
+
+over all wealth levels:
+$$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(121))$$
+
+** Decay of the marginal utility of money
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/rabin_table.png}
+#+LATEX: \end{figure}
+
+
 
 ** Fama French
-Where is volatility compensation??
+- allegedly, some common risk factors could be identified: Fama /
+  French 
+- no volatility compensation: if everybody else has a large and
+  diversified portfolio, they do not bother about idiosyncratic risks 
+- factor models (industry standard)
 
-
-** Forecasting returns
-- allegedly, according to Cochrane, future annual returns could be
-  forecast through dividend price ratios 
-- consequences for higher frequency returns?
-  - simple shift of means is not sufficient!
+- forecasting returns:
+  - allegedly, according to Cochrane, future annual returns could be
+    forecast through dividend price ratios
+  - consequences for higher frequency returns?
+    - simple shift of means is not sufficient!
 
 * Markowitz
+Problems: 
+- sole $\mu$-$\Sigma$ optimization is not enough
+- multi-period extension
+- estimation risk (overconfidence / bootstrap)
+- 
 
 ** Overconfidence
 expert vs statistical overconfidence
@@ -264,10 +389,12 @@ expert vs statistical overconfidence
 
 ** Using asset pricing theory for better moment estimates
 
-** 
 
 * Julia / github
 
 ** TimeData package
-
 introducing my package
+
+* References                                                       :noexport:
+#+LATEX: \bibliographystyle{apalike}
+#+LATEX: \bibliography{references.bib}
