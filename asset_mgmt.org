@@ -17,7 +17,7 @@
 
 #+OPTIONS: d:nil
 #+OPTIONS: H:2
-#+OPTIONS: toc:t
+#+OPTIONS: toc:nil
 #+OPTIONS: todo:t
 #+OPTIONS: tags:nil
 #+OPTIONS: skip:on
@@ -30,6 +30,7 @@
 #+PROPERTY: tangle yes
 #+PROPERTY: dir ./src_results/
 
+
 #+BEGIN_SRC comment :eval never :exports none
 the following line does include toc after each section!
 however, preview-latex does not work with it!
@@ -39,17 +40,72 @@ however, preview-latex does not work with it!
 #+LATEX_HEADER: \subtitle{{\color{red} work in progress}}
 #+END_SRC
 
-* Asset pricing - consumption based model
+** Motivation
+*** traditional notion of risk management
+estimation of risk for *given* and *immutable* portfolio composition 
+
+*** proceed with list without box                           :B_ignoreheading:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :END:
+- unrealistic (especially for longer horizons):
+  - portfolio managers most likely adapt if some asset's risk
+    increases relative to others 
+  - some investment strategies are explicitly build on portfolio
+    re-balancing (duration-based hedging strategies) 
+
+- no guideline on portfolio selection itself: what is optimal
+  investment strategy if risk is taken into account 
+
+$\Rightarrow$ asset management as a natural extension to risk
+management (Solvency II)
+
+
+** Motivation
+Original intention:
+- Markowitz
+- factor models
+  - reduce dimensions
+  - robust estimation of covariance matrix
+  - interpret-able structure $\Rightarrow$ false sense of control
+    through linear sensitivities
+
+Crucial part of Markowitz: expected returns 
+*** Asset pricing theory
+- better estimation
+- reveal time-variation
+$\Rightarrow$ predictability?
+
 
 ** Motivation                                                         :notes:
+Hence, I did set up to get acquainted with asset management
+- Markowitz: Jasic did wake my interest
+- factor models:
+  - dimension reduction: market-wide driving factors
+  - interpret-able structure required for actively intervening and
+    selecting assets
+  - industry standard
 
+First moments: I didn't really spent a lot of attention on them
+
+How much information is in conditional expectations? Does it allow
+predictability? 
 - asset pricing / return predictability usually only slightly referred
   to 
 - link to Benjamin's talk 
   - compared to his results, my talk will be quite unimpressive
   - think about basics: what patterns exist in first moments of assets 
 
+
+** Outline
+#+LaTeX: \tableofcontents
+
+* Asset pricing
+
+
 ** Basic assumption 
+
+Following \cite{rv_coch_2009_asset_pricing}: consumption based model
 
 - people are *expected utility maximizers*: with future wealth $X$ and
   utility function $U$, the optimization problem is
@@ -263,9 +319,58 @@ Risks that everybody has: intuitive $\beta$ explanation
 - hence: assets are comparatively worthless when they are needed most 
 - extra compensation
 
-** Riskmanagement                                                     :notes:
-Also, it should matter to you, when you exceed your value-at-risk ->
-Re-financing costs
+** More realistic factors: Fama / French
+- if we were to hedge personal risks with assets, would we have to
+  model complete utility function?
+- personal risks (job income - temporary worker vs civil service with
+  job guarantee, catastrophic events) are usually better
+  hedge through insurance
+- what would be real risk factors that one would tried to hedge /
+  avoid with assets?
+
+- real world factors do not provide such an easy interpretation: Fama
+  / French 
+
+** Pricing anomalies
+Fama French model
+\cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+
+- average returns are said to be related to firm characteristics:
+  - size
+  - earnings / price
+  - cash flow / price
+  - book-to-market equity
+  - past sales growth
+  - long-term and short-term past return
+- explanation: 
+  - CAPM fails (anomalies)
+  - consumption based model?
+
+** Fama French three factor model
+
+Time series regression: index t?!
+$$R_{i}-R_{f}=\alpha_{i}+b_{i}(R_{M}-R_{f}) + s_{i}SMB + h_{i}HML + \epsilon_{i}$$
+
+$$\mathbb{E}[R_{i}]- R_{f}=b_{i}  \left( \mathbb{E}[R_{M}-R_{f}] \right) +
+s_{i}\mathbb{E}[SMB] + h_{i}\mathbb{E}[HML]$$
+
+HML: proxy for relative stress: 
+- weak firms with persistently low earnings tend to have high BE/ME
+  (comparatively low prices) and positive slopes on HML 
+
+
+** Momentum
+- firms with low long-term returns tend to have higher future returns
+  \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+- short-term returns tend to continue \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+
+through FF3: stocks with low long-term past returns (losers) tend to
+have positive SMB and HML slopes (they are smaller and relatively
+distressed) 
+- continuation of short-term returns not explained by FF3
+
+SMB and HML mimic combinations of two underlying risk factors or state
+variables of special hedging concern to investors.
 
 ** Consequences for Markowitz
 1. you are not only interested in $\mu$ and $\Sigma$, but also in the
@@ -281,11 +386,42 @@ Re-financing costs
    higher expected returns that translate into comparatively even
    higher utility
 
-** General problem
-Maximize expect utility over all components:
-- model each component (job loss, earthquake, child birth)
-- or: penalize unfavorable dependencies (risk neutral probabilities) 
-- is expected utility really the best approach anyways?
+
+** Consequences for Markowitz
+- market risk -> penalized through correlation
+- idiosyncratic risk -> penalized through high volatility, in the
+  limit vanishing, as one would expect
+- growth risk -> not incorporated! Would we like to?
+- any risk that we have besides market risk: not incorporated
+- what would be your risks? (Hard to tell)
+
+** Incorporating additional risks
+- how would we incorporate this into Markowitz?
+  - model complete distribution with all components?
+  - model assets, but adapt their return characteristics (risk neutral
+    probabilities) within optimization routine? 
+    - artificially scale down $\mu$ factor return of other risks?
+- control sensitivities ex-post?
+
+** No additional risks
+If we do not bother about it at all, it still could help in better
+estimation of return characteristics.
+
+
+Risk examples (except market risk $\beta$) are made up for intuition,
+but we really observe larger returns on assets with some patterns. (Of
+course: size, growth, momentum)
+
+Can they be explained through utility theory? 
+If they require higher compensation, do you require higher
+compensation also, or could you aggressively exploit possibilities of
+higher expected utility?
+
+
+
+** Risk management                                                    :notes:
+Also, it should matter to you, when you exceed your value-at-risk ->
+Re-financing costs
 
 ** Pitfalls of utility theory
 - in our models risk aversion usually is captured through concave
@@ -319,27 +455,34 @@ game:
 - tails: you *win* 11\$
 What can be inferred about the decay of marginal utility of money? 
 
-** Example:
+** Decay of marginal utility of money
 
+what does refraining from participation $\Leftrightarrow$ 
+$$0.5\sum_{i=91}^{100} U(\$(i)) >0.5\sum_{i=101}^{111} U(\$(i))$$
 
+tell us about $$U(\$(91))\cdot c = U(\$(111))?$$
 
-Picture
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.7\linewidth]{unreplicatable_pics/pitfalls_utility_theory_04.jpg}
+#+LATEX: \end{figure}
 
-** Problem: utility function
+** Decay of marginal utility of money
 
+Due to
 \begin{align*}
 10\cdot U(\$(91)) &>\sum_{i=91}^{100} U(\$(i)) \\
-&=\sum_{i=101}^{111} U(\$(i)) \\
+&>\sum_{i=101}^{111} U(\$(i)) \\
 &> 11\cdot U(\$(111))
 \end{align*}
 
-decay of money:
-$$U(\$(91)) \frac{10}{11}> U(\$(111))$$
+we get 
+$$U\left(\$(91)\right) \frac{10}{11}> U\left(\$(111)\right)$$
 
-over all wealth levels:
-$$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(121))$$
+And, still rejecting the game with initial wealth 121\$:
+$$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(131))$$
 
-** Decay of the marginal utility of money
+** Decay of marginal utility of money
 #+LATEX: \begin{figure}[htbp]
 #+LATEX:     \centering
 #+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/rabin_table.png}
@@ -361,20 +504,18 @@ $$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(121))$$
     - simple shift of means is not sufficient!
 
 * Markowitz
-Problems: 
+** General Markowitz problems
+Problems related to asset pricing theory: 
+- estimation problems for \mu
 - sole $\mu$-$\Sigma$ optimization is not enough
 - multi-period extension
 - estimation risk (overconfidence / bootstrap)
-- 
+- mean-variance efficiency does not equal utility maximization 
 
 ** Overconfidence
 expert vs statistical overconfidence
 
 ** Problems with utility
-- volatility is only one way to measure uncertainty -> skewness,
-  worst-case, ...
-- problems with utility theory: inconsistent for small stakes / large
-  stakes bets 
 - how does Markowitz work with / relate to asset pricing?
   - for risks that everybody else has but you don't, Markowitz will
     correctly find a good mean-vola ratio and invests into them
@@ -385,10 +526,11 @@ expert vs statistical overconfidence
     - usually picked due to better risk-return ratio
     - but: high correlation to other assets could make good
       risk-return ratio undesired
-- asset pricing could generate improved moment estimation?
 
 ** Using asset pricing theory for better moment estimates
 
+* Asset predictability
+- incorporating low frequency information into high frequency data 
 
 * Julia / github
 
