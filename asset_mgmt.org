@@ -67,7 +67,7 @@ Original intention:
 - factor models
   - reduce dimensions
   - robust estimation of covariance matrix
-  - interpret-able structure $\Rightarrow$ false sense of control
+  - interpretable structure $\Rightarrow$ false sense of control
     through linear sensitivities
 
 Crucial part of Markowitz: expected returns 
@@ -82,7 +82,7 @@ Hence, I did set up to get acquainted with asset management
 - Markowitz: Jasic did wake my interest
 - factor models:
   - dimension reduction: market-wide driving factors
-  - interpret-able structure required for actively intervening and
+  - interpretable structure required for actively intervening and
     selecting assets
   - industry standard
 
@@ -275,7 +275,6 @@ Given two assets *A* and *B* with *identical* return distributions
    \end{block}
 #+END_LaTeX
 
-
 ** Further explanation of "when"                                      :notes:
 In other words: if an asset tends to have its low price events exactly
 when you would need it, then you would require compensation for this
@@ -286,6 +285,22 @@ fact.
   (10 year bond)
 - a given state of nature -> need to sell asset only when I lose job 
 
+** Price effect
+market participants require *compensation* for an asset's correlation
+to personal risks:
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item[$\Rightarrow$] future cash flow less worthwhile
+   \item[$\Rightarrow$] lower price
+   \item[$\Rightarrow$] higher expected return
+   \end{itemize}
+#+END_LaTeX
+
+*** Improved estimation
+knowledge of the correlation between an asset and the personal risks
+of market participants should allow better estimation of expected
+returns (benefits for Markowitz)
+
 ** Three types of risk
 Risks, that
 - *only you have*, but nobody else: assets correlated with your risk
@@ -295,6 +310,144 @@ Risks, that
 - *everybody else has, but you don't*: assets correlated with these
   risks exhibit higher expected returns, and also generate higher
   levels of utility $\Rightarrow$ *investment opportunity*
+
+*** 
+How should this be taken into account in portfolio selection? 
+
+How is this reflected in Markowitz portfolio optimization?
+
+** Possible approaches
+In order to find the true utility maximizing portfolio, we could:
+- model overall distribution including all wealth components (too
+  ambitious)
+- perfectly hedge personal risks through insurance: optimizing
+  portfolio without taking into account personal risks should be good
+  approximation 
+
+But: what happens without perfectly hedged personal risks, if we still
+optimize with respect to assets only?
+
+** Reality check
+#+BEGIN_LaTeX
+   \begin{block}{Personal check}<+->
+     \begin{itemize}
+     \item are all your personal risks hedged through insurance?
+     \item if not: which of the remaining risks could be hedged through stocks?
+       (if shared by other market participants: leading to lower expected
+       returns for some assets) 
+     \end{itemize}
+   \end{block}
+
+#+END_LaTeX
+
+
+#+BEGIN_LaTeX
+   \begin{block}{Market check}<+->
+     Some stocks persistently exhibit higher expected returns than others.
+     \begin{itemize}
+     \item compensation for personal risks? 
+       \begin{itemize}
+       \item consumption based model
+       \item should you require same compensation?
+       \end{itemize}
+     \item market inefficiency?
+     \end{itemize}
+   \end{block}
+
+#+END_LaTeX
+
+
+
+
+
+** Markowitz
+
+For any given expected portfolio return $\mu^{*}$, minimize portfolio variance:
+*** 
+\begin{align*}
+\underset{\xi}{\min}\, \xi'\Sigma\xi & \\
+\text{ subject to } \xi'\mu &=\mu^{*},\\
+\xi'\bf{1} &=1
+\end{align*}
+
+*** proceed with list without box                           :B_ignoreheading:
+    :PROPERTIES:
+    :BEAMER_env: ignoreheading
+    :END:
+\Rightarrow assets with *low volatility* and *low correlations* to other assets
+are preferred 
+
+\Rightarrow correlation to personal risks is unconsidered
+
+** Markowitz deficiency
+If risks really exist that require additional compensation, Markowitz
+will fail:
+
+- risks that only you have:
+  - Markowitz fails to require compensation for correlation to
+    personal risks
+
+- risks that you and everybody else have: 
+  - compensation in form of higher expected returns is mis-interpreted
+    with higher utility, and one will falsely concentrate on these
+    assets
+
+** Market efficiency
+Inefficient market: 
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item patterns of higher expected returns are irrational
+   \item you do not require compensation for these risks
+   \item[$\Rightarrow$] aggressively exploit higher expected returns
+   \end{itemize}
+#+END_LaTeX
+
+** Market efficiency
+Efficient market:
+- should you require the same compensation as all other market
+  participants?
+- Markowitz over-invests in assets with higher expected returns,
+  although they do not provide higher expected utility (less
+  diversification) 
+
+
+** Adaptions of Markowitz 
+
+Possible adaptions of Markowitz:
+- return characteristics of assets should be adapted to take
+  compensation into account
+  - risk neutral probabilities
+  - artificially scale down $\mu$ factor return of other risks
+  - penalize correlation to some given risk factors
+\Rightarrow based on which data?
+
+** My approach
+- no personal risks identified:
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item[$\Rightarrow$] no compensation required
+   \item[$\Rightarrow$] Markowitz works out of the box 
+   \end{itemize}
+#+END_LaTeX
+- estimating moments based on observable patterns of expected returns
+
+If risk factors are not taken into account during portfolio selection,
+at least they should be looked at during risk management:
+- knowing sensitivities to risk factors (even though they do not
+  change VaR, we still want to know when we exceed VaR)
+- risk management: taking re-financing costs into account
+  (asset-liability management)
+
+** Doubts
+Or: should we probably incorporate risk factors anyways? Maybe they do
+not matter to us at all, but still will require higher refinancing
+costs in certain states of nature!
+
+** Consequences for Markowitz                                         :notes:
+some general form of job risk / market risk should already be included
+- market risk -> penalized through correlation
+- idiosyncratic risk -> penalized through high volatility, in the
+  limit vanishing, as one would expect
 
 ** CAPM remarks                                                       :notes:
 
@@ -319,109 +472,17 @@ Risks that everybody has: intuitive $\beta$ explanation
 - hence: assets are comparatively worthless when they are needed most 
 - extra compensation
 
-** More realistic factors: Fama / French
-- if we were to hedge personal risks with assets, would we have to
-  model complete utility function?
-- personal risks (job income - temporary worker vs civil service with
-  job guarantee, catastrophic events) are usually better
-  hedge through insurance
-- what would be real risk factors that one would tried to hedge /
-  avoid with assets?
 
-- real world factors do not provide such an easy interpretation: Fama
-  / French 
+* Further problems
 
-** Pricing anomalies
-Fama French model
-\cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+** General Markowitz problems
+Problems related to asset pricing theory: 
+- estimation problems for \mu
+- sole $\mu$-$\Sigma$ optimization is not enough
+- multi-period extension
+- estimation risk (overconfidence / bootstrap)
+- mean-variance efficiency does not equal utility maximization 
 
-- average returns are said to be related to firm characteristics:
-  - size
-  - earnings / price
-  - cash flow / price
-  - book-to-market equity
-  - past sales growth
-  - long-term and short-term past return
-- explanation: 
-  - CAPM fails (anomalies)
-  - consumption based model?
-
-** Fama French three factor model
-
-Time series regression: index t?!
-$$R_{i}-R_{f}=\alpha_{i}+b_{i}(R_{M}-R_{f}) + s_{i}SMB + h_{i}HML + \epsilon_{i}$$
-
-$$\mathbb{E}[R_{i}]- R_{f}=b_{i}  \left( \mathbb{E}[R_{M}-R_{f}] \right) +
-s_{i}\mathbb{E}[SMB] + h_{i}\mathbb{E}[HML]$$
-
-HML: proxy for relative stress: 
-- weak firms with persistently low earnings tend to have high BE/ME
-  (comparatively low prices) and positive slopes on HML 
-
-
-** Momentum
-- firms with low long-term returns tend to have higher future returns
-  \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
-- short-term returns tend to continue \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
-
-through FF3: stocks with low long-term past returns (losers) tend to
-have positive SMB and HML slopes (they are smaller and relatively
-distressed) 
-- continuation of short-term returns not explained by FF3
-
-SMB and HML mimic combinations of two underlying risk factors or state
-variables of special hedging concern to investors.
-
-** Consequences for Markowitz
-1. you are not only interested in $\mu$ and $\Sigma$, but also in the
-  dependency between your portfolio and your other risks
--> sole $\mu$-$\Sigma$ optimization is not enough!
--> how do we incorporate this into Markowitz
-
-2. knowledge about other people's risks could improve our estimation
-   of $\mu$ and $\Sigma$ -> assets that relate to risks of everybody
-   should exhibit higher returns
-
-3. if you have different concerns than the market, you could get
-   higher expected returns that translate into comparatively even
-   higher utility
-
-
-** Consequences for Markowitz
-- market risk -> penalized through correlation
-- idiosyncratic risk -> penalized through high volatility, in the
-  limit vanishing, as one would expect
-- growth risk -> not incorporated! Would we like to?
-- any risk that we have besides market risk: not incorporated
-- what would be your risks? (Hard to tell)
-
-** Incorporating additional risks
-- how would we incorporate this into Markowitz?
-  - model complete distribution with all components?
-  - model assets, but adapt their return characteristics (risk neutral
-    probabilities) within optimization routine? 
-    - artificially scale down $\mu$ factor return of other risks?
-- control sensitivities ex-post?
-
-** No additional risks
-If we do not bother about it at all, it still could help in better
-estimation of return characteristics.
-
-
-Risk examples (except market risk $\beta$) are made up for intuition,
-but we really observe larger returns on assets with some patterns. (Of
-course: size, growth, momentum)
-
-Can they be explained through utility theory? 
-If they require higher compensation, do you require higher
-compensation also, or could you aggressively exploit possibilities of
-higher expected utility?
-
-
-
-** Risk management                                                    :notes:
-Also, it should matter to you, when you exceed your value-at-risk ->
-Re-financing costs
 
 ** Pitfalls of utility theory
 - in our models risk aversion usually is captured through concave
@@ -490,6 +551,61 @@ $$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(131))$$
 
 
 
+* Return predictability
+** More realistic factors: Fama / French
+But: some risks (less interpretable) are not hedged and hence show
+higher returns 
+
+
+- what would be real risk factors that one would tried to hedge /
+  avoid with assets?
+- real world factors do not provide such an easy interpretation: Fama
+  / French 
+
+** Pricing anomalies
+Fama French model
+\cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+
+- average returns are said to be related to firm characteristics:
+  - size
+  - earnings / price
+  - cash flow / price
+  - book-to-market equity
+  - past sales growth
+  - long-term and short-term past return
+- explanation: 
+  - CAPM fails (anomalies)
+  - consumption based model?
+
+** Fama French three factor model
+
+Time series regression: index t?!
+$$R_{i}-R_{f}=\alpha_{i}+b_{i}(R_{M}-R_{f}) + s_{i}SMB + h_{i}HML + \epsilon_{i}$$
+
+$$\mathbb{E}[R_{i}]- R_{f}=b_{i}  \left( \mathbb{E}[R_{M}-R_{f}] \right) +
+s_{i}\mathbb{E}[SMB] + h_{i}\mathbb{E}[HML]$$
+
+HML: proxy for relative stress: 
+- weak firms with persistently low earnings tend to have high BE/ME
+  (comparatively low prices) and positive slopes on HML 
+
+
+** Momentum
+- firms with low long-term returns tend to have higher future returns
+  \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+- short-term returns tend to continue \cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies} 
+
+through FF3: stocks with low long-term past returns (losers) tend to
+have positive SMB and HML slopes (they are smaller and relatively
+distressed) 
+- continuation of short-term returns not explained by FF3
+
+SMB and HML mimic combinations of two underlying risk factors or state
+variables of special hedging concern to investors.
+
+
+
+
 ** Fama French
 - allegedly, some common risk factors could be identified: Fama /
   French 
@@ -503,34 +619,7 @@ $$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(131))$$
   - consequences for higher frequency returns?
     - simple shift of means is not sufficient!
 
-* Markowitz
-** General Markowitz problems
-Problems related to asset pricing theory: 
-- estimation problems for \mu
-- sole $\mu$-$\Sigma$ optimization is not enough
-- multi-period extension
-- estimation risk (overconfidence / bootstrap)
-- mean-variance efficiency does not equal utility maximization 
-
-** Overconfidence
-expert vs statistical overconfidence
-
-** Problems with utility
-- how does Markowitz work with / relate to asset pricing?
-  - for risks that everybody else has but you don't, Markowitz will
-    correctly find a good mean-vola ratio and invests into them
-  - for risks that only you have, Markowitz does not notice that
-    prevailing risk-return ratio is not sufficient to compensate you
-    for it
-  - risks that everybody has: 
-    - usually picked due to better risk-return ratio
-    - but: high correlation to other assets could make good
-      risk-return ratio undesired
-
-** Using asset pricing theory for better moment estimates
-
-* Asset predictability
-- incorporating low frequency information into high frequency data 
+** incorporating low frequency information into high frequency data 
 
 * Julia / github
 
