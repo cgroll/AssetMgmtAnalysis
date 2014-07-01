@@ -14,6 +14,7 @@
 #+LaTeX_HEADER: \usepackage{subfigure}
 #+LaTeX_HEADER: \usepackage{graphicx}
 #+LaTeX_HEADER: \usepackage{caption}
+#+LaTeX_HEADER: \usepackage{hyperref}
 
 #+OPTIONS: d:nil
 #+OPTIONS: H:2
@@ -30,13 +31,14 @@
 #+PROPERTY: tangle yes
 #+PROPERTY: dir ./src_results/
 
+#+LATEX_HEADER: \setbeamertemplate{footline}[page number] 
+#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
 
 #+BEGIN_SRC comment :eval never :exports none
 the following line does include toc after each section!
 however, preview-latex does not work with it!
 #+startup: beamer
-#+LATEX_HEADER: \setbeamertemplate{footline}[page number] 
-#+latex_header: \AtBeginSection[]{\begin{frame}<beamer>\frametitle{Topic}\tableofcontents[currentsection]\end{frame}}
+
 #+LATEX_HEADER: \subtitle{{\color{red} work in progress}}
 #+END_SRC
 
@@ -317,10 +319,10 @@ How should this be taken into account in portfolio selection?
 How is this reflected in Markowitz portfolio optimization?
 
 ** Possible approaches
-In order to find the true utility maximizing portfolio, we could:
-- model overall distribution including all wealth components (too
+In order to find the *overall utility* maximizing portfolio, we could:
+- *model overall distribution* including all wealth components (too
   ambitious)
-- perfectly hedge personal risks through insurance: optimizing
+- perfectly *hedge personal risks* through insurance: optimizing
   portfolio without taking into account personal risks should be good
   approximation 
 
@@ -343,7 +345,7 @@ optimize with respect to assets only?
 
 #+BEGIN_LaTeX
    \begin{block}{Market check}<+->
-     Some stocks persistently exhibit higher expected returns than others.
+     Some stocks \alert{persistently exhibit higher expected returns} than others.
      \begin{itemize}
      \item compensation for personal risks? 
        \begin{itemize}
@@ -380,8 +382,8 @@ are preferred
 \Rightarrow correlation to personal risks is unconsidered
 
 ** Markowitz deficiency
-If risks really exist that require additional compensation, Markowitz
-will fail:
+If *personal risks really exist* that require additional compensation,
+Markowitz will fail:
 
 - risks that only you have:
   - Markowitz fails to require compensation for correlation to
@@ -392,53 +394,62 @@ will fail:
     with higher utility, and one will falsely concentrate on these
     assets
 
-** Market efficiency
+** Consequences of higher expected return patterns
+
 Inefficient market: 
 #+BEGIN_LaTeX
    \begin{itemize}
-   \item patterns of higher expected returns are irrational
+   \item patterns of higher expected returns are \alert{irrational}
    \item you do not require compensation for these risks
    \item[$\Rightarrow$] aggressively exploit higher expected returns
    \end{itemize}
+\vspace{5 mm}
 #+END_LaTeX
 
-** Market efficiency
 Efficient market:
-- should you require the same compensation as all other market
-  participants?
-- Markowitz over-invests in assets with higher expected returns,
-  although they do not provide higher expected utility (less
-  diversification) 
+- there are risks that all market participants want to be compensated
+  for
+- should you require the same compensation?
+
+As long as you are not affected by the risks that all other market
+participants seem to bother about, Markowitz works
+#+BEGIN_LaTeX
+   \begin{itemize}
+   \item[$\Rightarrow$] investment opportunities 
+   \end{itemize}
+#+END_LaTeX
 
 
 ** Adaptions of Markowitz 
 
-Possible adaptions of Markowitz:
+Given some personal risks exist, how could Markowitz be adapted?
 - return characteristics of assets should be adapted to take
   compensation into account
   - risk neutral probabilities
-  - artificially scale down $\mu$ factor return of other risks
+  - artificially scale down $\mu$ of risk factors
   - penalize correlation to some given risk factors
 \Rightarrow based on which data?
 
 ** My approach
-- no personal risks identified:
+
+
 #+BEGIN_LaTeX
    \begin{itemize}
+   \item no personal risks identified
    \item[$\Rightarrow$] no compensation required
    \item[$\Rightarrow$] Markowitz works out of the box 
+   \item estimating moments based on observable patterns of expected returns
    \end{itemize}
 #+END_LaTeX
-- estimating moments based on observable patterns of expected returns
 
 If risk factors are not taken into account during portfolio selection,
 at least they should be looked at during risk management:
-- knowing sensitivities to risk factors (even though they do not
-  change VaR, we still want to know when we exceed VaR)
+- knowing sensitivities to risk factors (under which circumstances do
+  we exceed VaR)
 - risk management: taking re-financing costs into account
   (asset-liability management)
 
-** Doubts
+** Doubts                                                             :notes:
 Or: should we probably incorporate risk factors anyways? Maybe they do
 not matter to us at all, but still will require higher refinancing
 costs in certain states of nature!
@@ -473,8 +484,38 @@ Risks that everybody has: intuitive $\beta$ explanation
 - extra compensation
 
 
-* Further problems
+* Teaser
 
+** Fama-French
+
+From
+\cite{rv_fama_fren_1996_multifactor_explanations_asset_pricing_anomalies}:
+
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/fama_french_size_hml.png}
+#+LATEX: \end{figure}
+
+** Momentum
+From \cite{rv_asnes_fraz_2014_fact_fiction_momentum_investing}:
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/momentum.png}
+#+LATEX: \end{figure}
+
+** Dividend yields
+From \cite{rv_coch_2009_asset_pricing}:
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=0.8\linewidth]{unreplicatable_pics/cochrane_dividend_yield.png}
+#+LATEX: \end{figure}
+
+** References
+#+LATEX: \bibliographystyle{apalike}
+#+LATEX: \bibliography{references.bib}
+
+
+* Further problems                                                    :notes:
 ** General Markowitz problems
 Problems related to asset pricing theory: 
 - estimation problems for \mu
@@ -551,7 +592,8 @@ $$U(\$(91)) \left( \frac{10}{11} \right)^{2}> U(\$(131))$$
 
 
 
-* Return predictability
+
+* Return predictability                                               :notes:
 ** More realistic factors: Fama / French
 But: some risks (less interpretable) are not hedged and hence show
 higher returns 
@@ -621,11 +663,37 @@ variables of special hedging concern to investors.
 
 ** incorporating low frequency information into high frequency data 
 
-* Julia / github
+* Julia
 
-** TimeData package
+** Benefits
+- speed
+- free and open source (MIT license)
+- expressive language
+- IJulia IDE
+  - combining code, text, graphics, LaTeX, multimedia
+  - exportation to pdf, html or html slides
+- transparency
+  - github
+  - testing: automatic build test / code coverage
+
+** Speed benchmarks
+#+LATEX: \begin{figure}[htbp]
+#+LATEX:     \centering
+#+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/julia_benchmarks.png}
+#+LATEX: \end{figure}
+
+** IJulia: story telling with data
+
+Export:
+- pdf (using LaTeX)
+- [[http://nbviewer.ipython.org/gist/cgroll/bcc32c25eb2f4834bf71][github hosted json, viewable as html at nbviewer]]
+- [[http://cgroll.github.io/julia_language_features/#/][github hosted html slideshow]]
+
+Other examples:
+- [[http://nbviewer.ipython.org/github/ipython/ipython/blob/1.x/examples/notebooks/Part%205%20-%20Rich%20Display%20System.ipynb][embedding rich multimedia content]]
+- [[http://nbviewer.ipython.org/gist/bpostlethwaite/7551139][embedding interactive plots through plotly]]
+
+
+** TimeData package                                                   :notes:
 introducing my package
 
-* References                                                       :noexport:
-#+LATEX: \bibliographystyle{apalike}
-#+LATEX: \bibliography{references.bib}
