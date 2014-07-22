@@ -14,7 +14,6 @@
 #+LaTeX_HEADER: \usepackage{subfigure}
 #+LaTeX_HEADER: \usepackage{graphicx}
 #+LaTeX_HEADER: \usepackage{caption}
-#+LaTeX_HEADER: \usepackage{hyperref}
 
 #+OPTIONS: d:nil
 #+OPTIONS: H:2
@@ -682,7 +681,7 @@ variables of special hedging concern to investors.
 #+LATEX:     \includegraphics[width=\linewidth]{unreplicatable_pics/julia_benchmarks.png}
 #+LATEX: \end{figure}
 
-** IJulia: story telling with data
+** IJulia: story telling with data                                    :notes:
 
 Export:
 - pdf (using LaTeX)
