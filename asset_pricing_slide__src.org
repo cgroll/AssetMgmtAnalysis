@@ -41,6 +41,14 @@ however, preview-latex does not work with it!
 #+LATEX_HEADER: \subtitle{{\color{red} work in progress}}
 #+END_SRC
 
+#+BEGIN_SRC comment :eval never :exports none
+Note: 
+- final slides can be found under
+  ~/work/presentations/slides_ss14_optimal_portfolio_selection_asset_pricing_julia.pdf
+- new export would require references.bib file, but link was broken
+#+END_SRC
+
+
 ** Motivation
 *** traditional notion of risk management
 estimation of risk for *given* and *immutable* portfolio composition 
