@@ -1,0 +1,3 @@
+[submodule "financial_data"]
+	path = financial_data
+	url = git@gitlab.com:cgroll/financial_data.git
