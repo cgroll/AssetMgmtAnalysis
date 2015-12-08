@@ -9,19 +9,6 @@ using Dates
 ## load parts of AssetMgmt package ##
 #####################################
 
-include(joinpath(homedir(),
-                 "research/julia/AssetMgmt/src/universeModels.jl"))
-include(joinpath(homedir(),
-                 "research/julia/AssetMgmt/src/universeEstimate.jl"))
-include(joinpath(homedir(),
-                 "research/julia/AssetMgmt/src/initialStrategies.jl"))
-include(joinpath(homedir(),
-                 "research/julia/AssetMgmt/src/strategies.jl"))
-
-## include(joinpath(homedir(),
-                 ## "research/julia/AssetMgmt/src/estimation.jl"))
-
-
 ## load asset management package
 include(joinpath(homedir(), "research/julia/AssetMgmt/src/AssetMgmt.jl"))
 
@@ -54,6 +41,8 @@ include("src/prepareData.jl")
 ## optimize(mod::Universe, s::Strategy,
 ##          data::Timematr, InvHistory::Investments)
 
+## test for positive definiteness
+## isposdef(A) 
 
 ########################
 ## test SampleMoments ##
@@ -88,6 +77,63 @@ uFit = AssetMgmt.estimate(AssetMgmt.SampleMoments,
 uFit = AssetMgmt.estimate(AssetMgmt.ExpWeighted,
                           aggrDiscRetsData, Date(2015,12,1))
 
+##############
+## plotting ##
+##############
+
+p = AssetMgmt.plotAssetMoments(mod, legendName = "AssetLabel");
+p = AssetMgmt.plotAssetMoments(mod);
+
+p = AssetMgmt.plotAssetMoments(mod, assetInfo;
+                               colCol = :RiskClass)
+draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
+
+
+###########################
+## get moments over time ##
+###########################
+
+allDats = idx(aggrDiscRetsData)
+
+## preallocation
+nObs, nAss = size(aggrDiscRetsData)
+musOverTime = DataArray(Float64, nObs, nAss)
+sigmasOverTime = DataArray(Float64, nObs, nAss)
+nCovs = int((nAss)*(nAss-1)/2)
+corrOverTime = DataArray(Float64, nObs, nCovs)
+
+for ii=1:length(allDats)
+    thisDat = allDats[ii]
+    
+    ## estimate moments
+    mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
+                         aggrDiscRetsData, thisDat)
+
+    ## extract mus and sigmas
+    if AssetMgmt.isDef(mod)
+        musOverTime[ii, :] = mod.mu'
+        sigmasOverTime[ii, :] =
+            (Float64[sqrt(mod.sigma[jj, jj]) for jj=1:nAss])'
+
+        ## get correlation matrix
+        d = diagm(1./sqrt(diag(mod.sigma)))
+        corrMatr = d*mod.sigma*d
+
+        ## extract correlations
+        corrs = vcat([corrMatr[(jj+1:end), jj] for jj=1:(nAss-1)]...)
+        corrOverTime[ii, :] = corrs'
+    end
+end
+
+## transform to Timenum
+df = DataFrame()
+for ii=1:nAss
+    thisNam = mod.names[ii]
+    df[thisNam] = musOverTime[:, ii]
+end
+
+
+
 #######################
 ## test optimizeWgts ##
 #######################
@@ -97,25 +143,11 @@ gmv = AssetMgmt.GMVSS()
 xGMV = AssetMgmt.optimizeWgts(uFit, gmv)
 
 
-#################################
-## visualize mu-sigma universe ##
-#################################
 
-annualFactor = 52
-mus = ((1 + mod.mu).^annualFactor - 1)*100
-diagSigmas = Float64[mod.sigma[ii, ii] for ii=1:nAss]
-sigmas = diagSigmas*sqrt(annualFactor)*100
+col = :AssetClass
+colName = "Asset class"
 
-## define function symbol to string and vice versa
-## define function to annualize mus and sigmas
-nams = UTF8String[string(xx) for xx in mod.names]
-momentsTable = DataFrame(AssetLabel = nams, mu = mus, sigma = sigmas)
-
-momentsTableExt = join(momentsTable, assetInfo, on = :AssetLabel)
-
-p = plot(momentsTableExt, x="sigma", y="mu", color="AssetClass", Geom.point);
-
-draw(PDF("pics/universePlot.pdf", 15cm, 15cm), p)
+draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
 
 
 ## optimize single period
