@@ -93,45 +93,72 @@ draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
 ## get moments over time ##
 ###########################
 
-allDats = idx(aggrDiscRetsData)
+function getTimeVaryingMoments(modType::Type{AssetMgmt.SampleMoments},
+                               data::Timematr)
+    ## get all days
+    allDats = idx(data)
 
-## preallocation
-nObs, nAss = size(aggrDiscRetsData)
-musOverTime = DataArray(Float64, nObs, nAss)
-sigmasOverTime = DataArray(Float64, nObs, nAss)
-nCovs = int((nAss)*(nAss-1)/2)
-corrOverTime = DataArray(Float64, nObs, nCovs)
+    ## preallocation
+    nObs, nAss = size(data)
+    musOverTime = DataArray(Float64, nObs, nAss)
+    sigmasOverTime = DataArray(Float64, nObs, nAss)
+    nCovs = int((nAss)*(nAss-1)/2)
+    corrOverTime = DataArray(Float64, nObs, nCovs)
 
-for ii=1:length(allDats)
-    thisDat = allDats[ii]
+    for ii=1:length(allDats)
+        thisDat = allDats[ii]
     
-    ## estimate moments
-    mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
-                         aggrDiscRetsData, thisDat)
+        ## estimate moments
+        mod = AssetMgmt.fitModel(modType, data, thisDat)
 
-    ## extract mus and sigmas
-    if AssetMgmt.isDef(mod)
-        musOverTime[ii, :] = mod.mu'
-        sigmasOverTime[ii, :] =
-            (Float64[sqrt(mod.sigma[jj, jj]) for jj=1:nAss])'
+        ## extract mus and sigmas
+        if AssetMgmt.isDef(mod)
+            musOverTime[ii, :] = mod.mu'
+            sigmasOverTime[ii, :] =
+                (Float64[sqrt(mod.sigma[jj, jj]) for jj=1:nAss])'
 
-        ## get correlation matrix
-        d = diagm(1./sqrt(diag(mod.sigma)))
-        corrMatr = d*mod.sigma*d
+            ## get correlation matrix
+            d = diagm(1./sqrt(diag(mod.sigma)))
+            corrMatr = d*mod.sigma*d
 
-        ## extract correlations
-        corrs = vcat([corrMatr[(jj+1:end), jj] for jj=1:(nAss-1)]...)
-        corrOverTime[ii, :] = corrs'
+            ## extract correlations
+            corrs = vcat([corrMatr[(jj+1:end), jj] for jj=1:(nAss-1)]...)
+            corrOverTime[ii, :] = corrs'
+        end
     end
+
+    ## transform to Timenum
+    dfMus = DataFrame()
+    dfSigmas = DataFrame()
+    for ii=1:nAss
+        thisNam = names(data)[ii]
+        dfMus[thisNam] = musOverTime[:, ii]
+        dfSigmas[thisNam] = sigmasOverTime[:, ii]
+    end
+
+    dfCorrs = DataFrame()
+    for ii=1:size(corrOverTime, 2)
+        dfCorrs[ii] = corrOverTime[:, ii]
+    end
+    
+    musOverTimeTd = Timenum(dfMus, idx(data))
+    sigmasOverTimeTd = Timenum(dfSigmas, idx(data))
+    corrOverTimeTd = Timenum(dfCorrs, idx(data))
+    return (musOverTimeTd, sigmasOverTimeTd, corrOverTimeTd)
 end
 
-## transform to Timenum
-df = DataFrame()
-for ii=1:nAss
-    thisNam = mod.names[ii]
-    df[thisNam] = musOverTime[:, ii]
-end
+kk = getTimeVaryingMoments(AssetMgmt.SampleMoments, aggrDiscRetsData)
 
+loadPlotting()
+
+p = gdfPlot(kk[1]);
+draw(PDF("pics/mus_overTime.pdf", 15cm, 10cm), p)
+
+p = gdfPlot(kk[2]);
+draw(PDF("pics/sigmas_overTime.pdf", 15cm, 10cm), p)
+
+p = gdfPlot(kk[3]);
+draw(PDF("pics/corrs_overTime.pdf", 15cm, 10cm), p)
 
 
 #######################
