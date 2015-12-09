@@ -15,6 +15,57 @@ include(joinpath(homedir(), "research/julia/AssetMgmt/src/AssetMgmt.jl"))
 ## load and process data
 include("src/prepareData.jl")
 
+
+##########################
+## gross to log moments ##
+##########################
+
+muGross = 1 + 0.0003999045704988394
+sigma = sqrt(1.0075481833724383e-7)
+
+nAss = size(mod.mu, 1)
+for ii=1:nAss
+    muGross = 1 + mod.mu[ii]
+    sigma = sqrt(mod.sigma[ii, ii])
+
+    ## to log moments
+    muLog, sigmaLog =
+        AssetMgmt.grossRetMomentsToLogRetMoments(muGross, sigma)
+
+    display(ii)
+    
+    ## and back
+    muGrossOut, sigmaOut =
+        AssetMgmt.logRetMomentsToGrossRetMoments(muLog, sigmaLog)
+
+    @test muGross == muGrossOut
+    @test_approx_eq_eps sigma sigmaOut 1e-14
+end
+
+#######################
+## scaling functions ##
+#######################
+
+muScaled = ones(nAss)
+sigmaScaled = ones(nAss)
+for ii=1:nAss
+    muSc, sigSc =
+        AssetMgmt.defaultMuSigmaScaling(mod.mu[ii], sqrt(mod.sigma[ii, ii]))
+    muScaled[ii] = muSc
+    sigmaScaled[ii] = sigSc
+end
+
+
+modScaled = AssetMgmt.SampleMoments(muScaled, diagm(sigmaScaled),
+                                    names(aggrDiscRetsData))
+
+
+p = AssetMgmt.plotAssetMoments(modScaled)
+draw(PDF("pics/scaled_moments.pdf", 15cm, 10cm), p)
+
+
+EMACS_STOPPER_EMACS_STOPPER_EMACS_STOPPER
+
 ######################
 ## type definitions ##
 ######################
@@ -89,63 +140,8 @@ p = AssetMgmt.plotAssetMoments(mod, assetInfo;
 draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
 
 
-###########################
-## get moments over time ##
-###########################
 
-function getTimeVaryingMoments(modType::Type{AssetMgmt.SampleMoments},
-                               data::Timematr)
-    ## get all days
-    allDats = idx(data)
 
-    ## preallocation
-    nObs, nAss = size(data)
-    musOverTime = DataArray(Float64, nObs, nAss)
-    sigmasOverTime = DataArray(Float64, nObs, nAss)
-    nCovs = int((nAss)*(nAss-1)/2)
-    corrOverTime = DataArray(Float64, nObs, nCovs)
-
-    for ii=1:length(allDats)
-        thisDat = allDats[ii]
-    
-        ## estimate moments
-        mod = AssetMgmt.fitModel(modType, data, thisDat)
-
-        ## extract mus and sigmas
-        if AssetMgmt.isDef(mod)
-            musOverTime[ii, :] = mod.mu'
-            sigmasOverTime[ii, :] =
-                (Float64[sqrt(mod.sigma[jj, jj]) for jj=1:nAss])'
-
-            ## get correlation matrix
-            d = diagm(1./sqrt(diag(mod.sigma)))
-            corrMatr = d*mod.sigma*d
-
-            ## extract correlations
-            corrs = vcat([corrMatr[(jj+1:end), jj] for jj=1:(nAss-1)]...)
-            corrOverTime[ii, :] = corrs'
-        end
-    end
-
-    ## transform to Timenum
-    dfMus = DataFrame()
-    dfSigmas = DataFrame()
-    for ii=1:nAss
-        thisNam = names(data)[ii]
-        dfMus[thisNam] = musOverTime[:, ii]
-        dfSigmas[thisNam] = sigmasOverTime[:, ii]
-    end
-
-    dfCorrs = DataFrame()
-    for ii=1:size(corrOverTime, 2)
-        dfCorrs[ii] = corrOverTime[:, ii]
-    end
-    
-    musOverTimeTd = Timenum(dfMus, idx(data))
-    sigmasOverTimeTd = Timenum(dfSigmas, idx(data))
-    corrOverTimeTd = Timenum(dfCorrs, idx(data))
-    return (musOverTimeTd, sigmasOverTimeTd, corrOverTimeTd)
-end
 
 kk = getTimeVaryingMoments(AssetMgmt.SampleMoments, aggrDiscRetsData)
 
