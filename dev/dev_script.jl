@@ -10,58 +10,64 @@ using Dates
 #####################################
 
 ## load asset management package
-include(joinpath(homedir(), "research/julia/AssetMgmt/src/AssetMgmt.jl"))
+include(joinpath(homedir(),
+                 "research/julia/AssetMgmt/src/AssetMgmt.jl"))
 
 ## load and process data
-include("src/prepareData.jl")
+include("dev/prepareData.jl")
+
+## puts the following variables into workspace
+## - priceData
+## - assetInfo
+## - discRetsData
+
+nObs, nAss = size(priceData)
+
+##################################
+## geometric vs arithmetic mean ##
+##################################
+
+mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
+                         discRetsData, Date(2015,12,1))
+
+################
+## unit tests ##
+################
+
+## run tests
+include(joinpath(homedir(), "research/julia/AssetMgmt/test/runtests.jl"))
+
+#####################################
+## estimate and visualize universe ##
+#####################################
+
+mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
+                         aggrDiscRetsData, Date(2015,12,1))
+p1 = AssetMgmt.plotAssetMoments(mod);
+draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p1)
+
+p2 = AssetMgmt.plotAssetMoments(mod, assetInfo = assetInfo,
+                               joinCol = :AssetLabel,
+                               colorCol = :AssetClass,
+                               legendName = "Asset class");
+draw(PDF("pics/universePlot_classColoring.pdf", 15cm, 10cm), p2)
+
+p3 = AssetMgmt.plotAssetMoments(mod, assetInfo = assetInfo,
+                                joinCol = :AssetLabel,
+                                colorCol = :Region,
+                                legendName = "Region");
+draw(PDF("pics/universePlot_regionColoring.pdf", 15cm, 10cm), p3)
+
+p4 = AssetMgmt.plotAssetMoments(mod, assetInfo = assetInfo,
+                               joinCol = :AssetLabel,
+                               colorCol = :RiskClass,
+                               legendName = "Risk class");
+draw(PDF("pics/universePlot_riskColoring.pdf", 15cm, 10cm), p4)
+
+draw(PDF("pics/universe_all_colorings.pdf", 30cm, 20cm),
+     vstack(hstack(p1, p2), hstack(p3, p4)))
 
 
-##########################
-## gross to log moments ##
-##########################
-
-muGross = 1 + 0.0003999045704988394
-sigma = sqrt(1.0075481833724383e-7)
-
-nAss = size(mod.mu, 1)
-for ii=1:nAss
-    muGross = 1 + mod.mu[ii]
-    sigma = sqrt(mod.sigma[ii, ii])
-
-    ## to log moments
-    muLog, sigmaLog =
-        AssetMgmt.grossRetMomentsToLogRetMoments(muGross, sigma)
-
-    display(ii)
-    
-    ## and back
-    muGrossOut, sigmaOut =
-        AssetMgmt.logRetMomentsToGrossRetMoments(muLog, sigmaLog)
-
-    @test muGross == muGrossOut
-    @test_approx_eq_eps sigma sigmaOut 1e-14
-end
-
-#######################
-## scaling functions ##
-#######################
-
-muScaled = ones(nAss)
-sigmaScaled = ones(nAss)
-for ii=1:nAss
-    muSc, sigSc =
-        AssetMgmt.defaultMuSigmaScaling(mod.mu[ii], sqrt(mod.sigma[ii, ii]))
-    muScaled[ii] = muSc
-    sigmaScaled[ii] = sigSc
-end
-
-
-modScaled = AssetMgmt.SampleMoments(muScaled, diagm(sigmaScaled),
-                                    names(aggrDiscRetsData))
-
-
-p = AssetMgmt.plotAssetMoments(modScaled)
-draw(PDF("pics/scaled_moments.pdf", 15cm, 10cm), p)
 
 
 EMACS_STOPPER_EMACS_STOPPER_EMACS_STOPPER
@@ -111,7 +117,6 @@ mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
                          aggrDiscRetsData, Date(1999,3,3),
                          minObs = 30)
 @test !AssetMgmt.isDef(mod)
-
 
 ######################
 ## UniverseEstimate ##
