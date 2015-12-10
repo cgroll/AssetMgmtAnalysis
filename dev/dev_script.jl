@@ -23,12 +23,65 @@ include("dev/prepareData.jl")
 
 nObs, nAss = size(priceData)
 
-##################################
-## geometric vs arithmetic mean ##
-##################################
+
+###############################
+## test efficient portfolios ##
+###############################
 
 mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
-                         discRetsData, Date(2015,12,1))
+                         discRetsData, Date(2001,12,2))
+
+muTarget = 0.003
+
+wgts = AssetMgmt.getEffPfGivenMu(mod, muTarget)
+
+## get portfolio moments
+AssetMgmt.getPMean(wgts, mod.mu)
+
+wgts = AssetMgmt.getEffPortfolios(mod)
+
+###############################
+## estimate universeEstimate ##
+###############################
+
+univ = AssetMgmt.estimate(AssetMgmt.SampleMoments,
+                          discRetsData, Date(2001,12,2))
+
+p = AssetMgmt.plotEff(univ.Universe);
+draw(SVG("dev_pics/effFront.svg", 15cm, 10cm), p)
+
+
+########################
+## efficient frontier ##
+########################
+
+kk = AssetMgmt.getEffFrontier(univ)
+
+xx = AssetMgmt.defaultMuSigmaScaling(kk[1], kk[2])
+
+p = plot(x=xx[2], y=xx[1], Geom.point);
+draw(SVG("dev_pics/effFront.svg", 15cm, 10cm), p)
+
+
+#######################################
+## optimize with respect to strategy ##
+#######################################
+
+strat = AssetMgmt.GMVSS()
+
+xGMV = AssetMgmt.optimizeWgts(univ, strat)
+gmvWgts = AssetMgmt.makeWeights(xGMV')
+
+p = AssetMgmt.plotPfsAndUniverse(univ.Universe, gmvWgts)
+draw(SVG("dev_pics/universeMoments.svg", 15cm, 10cm), p)
+
+
+
+###########################
+## optimize for each day ##
+###########################
+
+
 
 ################
 ## unit tests ##
