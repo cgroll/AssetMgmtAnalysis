@@ -2,7 +2,7 @@
 ## test ijulia tutorials
 ########################
 
-ijuliaFileNames = ["Raw_data_descriptive_analysis_and_filtering"]
+ijuliaFileNames = ["scacap_data_inspection"]
 
 println(" Converting ijulia notebooks\n")
 println("--------------------------------")
