@@ -23,64 +23,85 @@ include("dev/prepareData.jl")
 
 nObs, nAss = size(priceData)
 
-#####################################
-## write mu-sigma universe to file ##
-#####################################
+################
+## unit tests ##
+################
 
-include(joinpath(homedir(),
-                 "research/julia/AssetMgmt/test/createTestData.jl"))
+## run tests
+include(joinpath(homedir(), "research/julia/AssetMgmt/test/runtests.jl"))
 
-## scacapE6Names and mus20011202 and covMatr20011202 
+###################################
+## composeDataFrameMissingValues ##
+###################################
 
-mod = AssetMgmt.SampleMoments(mus20011202, covMatr20011202, scacapE6Names)
+function composeDataFrameMissingVals(vals::Array{Float64, 2},
+                                     nams::Array{Symbol, 1})
 
-## get moments directly
-nPfs = 50
-effMus, effSigmas = AssetMgmt.getEffFrontier(mod, nPoints = nPfs)
-
-## get efficient portfolio weights
-xEff = AssetMgmt.getEffPortfolios(mod, nPoints = nPfs)
-
-## calculate moments
-
-effMus2 = zeros(nPfs)
-effSigmas2 = zeros(nPfs)
-for ii=1:nPfs
-    effMus2[ii] = AssetMgmt.getPMean(xEff[ii, :][:], mod.mu)
-    effSigmas2[ii] =
-        sqrt(AssetMgmt.getPVar(xEff[ii, :][:], mod.sigma))
+    df = DataFrame()
+    nObs, nAss = size(vals)
+    for ii=1:nAss
+        da = DataArray(Float64, nObs)
+        for jj=1:nObs
+            if !isnan(vals[jj, ii])
+                da[jj] = vals[jj, ii]
+            end
+        end
+        df[nams[ii]] = da
+    end
+    return df
 end
 
-## test equality
-@test_approx_eq_eps effMus effMus2 1e-14
-@test_approx_eq_eps effSigmas effSigmas2 1e-14
 
 
-###############################
-## test efficient portfolios ##
-###############################
+##########################################
+## apply estimator / strategy over time ##
+##########################################
 
-mod = AssetMgmt.fitModel(AssetMgmt.SampleMoments,
-                         discRetsData, Date(2001,12,2))
+estimatorType = AssetMgmt.ExpWeighted
+strat = AssetMgmt.MinSigma(0.03)
 
-muTarget = 0.003
+data = discRetsData
 
-wgts = AssetMgmt.getEffPfGivenMu(mod, muTarget)
+## for mu-sigma strategies also give back expected portfolio moments
+## for each period
+function applyStrategy(estimator::Type{AssetMgmt.ExpWeighted},
+                       strat::AssetMgmt.InitialStrategy,
+                       data::Timematr)
+    
+    ## iterate over dates
+    allDats = idx(data)
+    nDats = length(allDats)
+    
+    ## preallocation
+    nObs, nAss = size(data)
+    allWgts = Array(Float64, nObs, nAss)
+    pfMoments = Array(Float64, nObs, 2)
+    
+    for ii=1:nDats
+        thisDate = allDats[ii]
+        univ = AssetMgmt.estimate(estimatorType, data, thisDate)
+        if AssetMgmt.isDef(univ)
+            wgts = AssetMgmt.optimizeWgts(univ, strat)
+            allWgts[ii, :] = wgts
 
-## get portfolio moments
-AssetMgmt.getPMean(wgts, mod.mu)
+            ## calculate portfolio moments
+            pfMu = AssetMgmt.getPMean(wgts[:], univ.Universe.mu)
+            pfSigma = sqrt(AssetMgmt.getPVar(wgts[:], univ.Universe.sigma))
+            pfMoments[ii, :] = [pfMu pfSigma]
+        else
+            allWgts[ii, :] = NaN
+            pfMoments[ii, :] = NaN
+        end
+    end
+    return allWgts, pfMoments
+end
 
-wgts = AssetMgmt.getEffPortfolios(mod)
+allWgts, pfMoments = applyStrategy(estimatorType, strat, data)
 
-###############################
-## estimate universeEstimate ##
-###############################
 
-univ = AssetMgmt.estimate(AssetMgmt.SampleMoments,
-                          discRetsData, Date(2001,12,2))
-
-p = AssetMgmt.plotEff(univ.Universe);
-draw(SVG("dev_pics/effFront.svg", 15cm, 10cm), p)
+wgtsSums = sum(allWgts, 2)
+wgtsSums = wgtsSums[!isnan(wgtsSums)]
+@test_approx_eq_eps  wgtsSums ones(length(wgtsSums)) 1e-10
 
 
 ########################
@@ -115,12 +136,6 @@ draw(SVG("dev_pics/universeMoments.svg", 15cm, 10cm), p)
 
 
 
-################
-## unit tests ##
-################
-
-## run tests
-include(joinpath(homedir(), "research/julia/AssetMgmt/test/runtests.jl"))
 
 #####################################
 ## estimate and visualize universe ##

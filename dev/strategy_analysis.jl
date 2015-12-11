@@ -128,7 +128,7 @@ allWgtsData =
     x -> Timenum(x, idx(discRetsData))
 
 pfMomentsData =
-    composeDataFrameMissingVals(pfMoments, names(discRetsData)) |>
+    composeDataFrameMissingVals(pfMoments, [:mu, :sigma]) |>
     x -> Timenum(x, idx(discRetsData))
 
 #######################
@@ -186,6 +186,68 @@ pNeg = plot(negWgts, x="x", y="y", color="color",
             Geom.bar(position=:stack));
 draw(SVG("dev_pics/weightsOverTimeStacked2.svg", 30cm, 30cm),
             vstack(pPos, pNeg))
+
+##########################################
+## visualize expected portfolio moments ##
+##########################################
+
+p = gdfPlot(pfMomentsData);
+draw(SVG("dev_pics/expectedMoment.svg", 15cm, 10cm), p)
+
+## get scaled moments
+scaledPfMomentsData = deepcopy(pfMomentsData)
+for ii=1:size(scaledPfMomentsData, 1)
+    currMu = get(scaledPfMomentsData, ii, 1)
+    currSigma = get(scaledPfMomentsData, ii, 2)
+    if !isna(currMu)
+        scaledMu, scaledSigma =
+            AssetMgmt.defaultMuSigmaScaling(currMu, currSigma)
+        scaledPfMomentsData[ii, 1] = scaledMu
+        scaledPfMomentsData[ii, 2] = scaledSigma
+    end
+end
+
+p = gdfPlot(scaledPfMomentsData);
+draw(SVG("dev_pics/expectedMoment_scaled.svg", 15cm, 10cm), p)
+
+
+###################################################################
+## plot portfolio moments for all portfolios with given universe ##
+###################################################################
+
+p = AssetMgmt.plotPfsAndUniverse(mod, allWgts[!isnan(allWgts[:, 1]), :]);
+draw(SVG("dev_pics/singleUniverse_allPfs.svg", 15cm, 10cm), p)
+
+
+###################################################
+## compared with universe and efficient frontier ##
+###################################################
+
+relevantDate = Date(2014, 5, 4)
+
+## get efficient frontier moments
+muEff, sigmaEff = AssetMgmt.getEffFrontier(mod)
+scaledMuEff, scaledSigmaEff =
+    AssetMgmt.defaultMuSigmaScaling(muEff, sigmaEff)
+
+## get asset moments
+muAss = mod.mu
+sigmaAss = AssetMgmt.getVolas(mod)
+scaledMuAss, scaledSigmaAss =
+    AssetMgmt.defaultMuSigmaScaling(muAss, sigmaAss)
+
+## get portfolio moments
+validDates = idx(scaledPfMomentsData) .<= relevantDate
+pfMoments = scaledPfMomentsData[validDates, :][end, :]
+
+scaledPfMu = get(pfMoments, 1, 1)
+scaledPfSigma = get(pfMoments, 1, 2)
+
+p = plot(layer(x=scaledSigmaEff, y=scaledMuEff, Geom.line),
+         layer(x=scaledSigmaAss, y=scaledMuAss, Geom.point),
+         layer(x=[scaledPfSigma], y=[scaledPfMu], color=[2.], Geom.point));
+
+draw(SVG("dev_pics/portfolio_and_universe.svg", 15cm, 10cm), p)
 
 
 ######################
