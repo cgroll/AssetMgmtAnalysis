@@ -23,6 +23,38 @@ include("dev/prepareData.jl")
 
 nObs, nAss = size(priceData)
 
+#####################################
+## write mu-sigma universe to file ##
+#####################################
+
+include(joinpath(homedir(),
+                 "research/julia/AssetMgmt/test/createTestData.jl"))
+
+## scacapE6Names and mus20011202 and covMatr20011202 
+
+mod = AssetMgmt.SampleMoments(mus20011202, covMatr20011202, scacapE6Names)
+
+## get moments directly
+nPfs = 50
+effMus, effSigmas = AssetMgmt.getEffFrontier(mod, nPoints = nPfs)
+
+## get efficient portfolio weights
+xEff = AssetMgmt.getEffPortfolios(mod, nPoints = nPfs)
+
+## calculate moments
+
+effMus2 = zeros(nPfs)
+effSigmas2 = zeros(nPfs)
+for ii=1:nPfs
+    effMus2[ii] = AssetMgmt.getPMean(xEff[ii, :][:], mod.mu)
+    effSigmas2[ii] =
+        sqrt(AssetMgmt.getPVar(xEff[ii, :][:], mod.sigma))
+end
+
+## test equality
+@test_approx_eq_eps effMus effMus2 1e-14
+@test_approx_eq_eps effSigmas effSigmas2 1e-14
+
 
 ###############################
 ## test efficient portfolios ##
