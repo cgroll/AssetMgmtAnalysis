@@ -233,50 +233,6 @@ uFit = AssetMgmt.estimate(AssetMgmt.SampleMoments,
 uFit = AssetMgmt.estimate(AssetMgmt.ExpWeighted,
                           aggrDiscRetsData, Date(2015,12,1))
 
-##############
-## plotting ##
-##############
-
-p = AssetMgmt.plotAssetMoments(mod, legendName = "AssetLabel");
-p = AssetMgmt.plotAssetMoments(mod);
-
-p = AssetMgmt.plotAssetMoments(mod, assetInfo;
-                               colCol = :RiskClass)
-draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
-
-
-
-
-
-kk = getTimeVaryingMoments(AssetMgmt.SampleMoments, aggrDiscRetsData)
-
-loadPlotting()
-
-p = gdfPlot(kk[1]);
-draw(PDF("pics/mus_overTime.pdf", 15cm, 10cm), p)
-
-p = gdfPlot(kk[2]);
-draw(PDF("pics/sigmas_overTime.pdf", 15cm, 10cm), p)
-
-p = gdfPlot(kk[3]);
-draw(PDF("pics/corrs_overTime.pdf", 15cm, 10cm), p)
-
-
-#######################
-## test optimizeWgts ##
-#######################
-
-gmv = AssetMgmt.GMVSS()
-
-xGMV = AssetMgmt.optimizeWgts(uFit, gmv)
-
-
-
-col = :AssetClass
-colName = "Asset class"
-
-draw(PDF("pics/universePlot.pdf", 15cm, 10cm), p)
-
 
 ## optimize single period
 ##-----------------------

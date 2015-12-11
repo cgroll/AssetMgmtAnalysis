@@ -257,3 +257,10 @@ draw(SVG("dev_pics/portfolio_and_universe.svg", 15cm, 10cm), p)
 ## - diversification
 ## - turnover
 ## - portfolio moments together with universe at given day
+
+#################
+## investments ##
+#################
+
+df = composeDataFrameMissingVals(allWgts, names(discRetsData))
+inv = AssetMgmt.Investments(df, idx(discRetsData))
