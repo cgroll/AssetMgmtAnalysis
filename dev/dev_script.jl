@@ -64,8 +64,8 @@ data = discRetsData
 
 ## for mu-sigma strategies also give back expected portfolio moments
 ## for each period
-function applyStrategy(estimator::Type{AssetMgmt.ExpWeighted},
-                       strat::AssetMgmt.InitialStrategy,
+function applyStrategy(strat::AssetMgmt.InitialStrategy,
+                       estimator::Type{AssetMgmt.ExpWeighted},
                        data::Timematr)
     
     ## iterate over dates
@@ -76,11 +76,15 @@ function applyStrategy(estimator::Type{AssetMgmt.ExpWeighted},
     nObs, nAss = size(data)
     allWgts = Array(Float64, nObs, nAss)
     pfMoments = Array(Float64, nObs, 2)
+    modelEstimated = falses(nObs)
     
     for ii=1:nDats
         thisDate = allDats[ii]
         univ = AssetMgmt.estimate(estimatorType, data, thisDate)
         if AssetMgmt.isDef(univ)
+            ## set estimation indicator to true
+            modelEstimated[ii] = true
+            
             wgts = AssetMgmt.optimizeWgts(univ, strat)
             allWgts[ii, :] = wgts
 
@@ -88,11 +92,13 @@ function applyStrategy(estimator::Type{AssetMgmt.ExpWeighted},
             pfMu = AssetMgmt.getPMean(wgts[:], univ.Universe.mu)
             pfSigma = sqrt(AssetMgmt.getPVar(wgts[:], univ.Universe.sigma))
             pfMoments[ii, :] = [pfMu pfSigma]
-        else
-            allWgts[ii, :] = NaN
-            pfMoments[ii, :] = NaN
         end
     end
+
+    ## remove non-estimatable dates
+    allWgts = allWgts[modelEstimated, :]
+    pfMoments = pfMoments[modelEstimated, :]
+
     return allWgts, pfMoments
 end
 

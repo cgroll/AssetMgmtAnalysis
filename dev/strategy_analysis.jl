@@ -47,8 +47,8 @@ nObs, nAss = size(discRetsData)
 ###############################
 
 musOverTime, sigmasOverTime, corrOverTime =
-    AssetMgmt.getTimeVaryingMoments(estimatorType,
-                                    discRetsData)
+    AssetMgmt.applyMuSigmaModelEstimator(estimatorType,
+                                         discRetsData)
 
 ## visualize moments over time
 p = gdfPlot(musOverTime);
@@ -63,19 +63,17 @@ draw(SVG("dev_pics/corrs_overTime.svg", 15cm, 10cm), p)
 ## show mu and sigma ranges
 ##-------------------------
 
-function getRange(valsOverTime::Timenum)
+function getRange(valsOverTime::Timematr)
     ## get the range for some values over time
     nObs = size(valsOverTime, 1)
     
     ## find minimum and maximum
-    minVal = DataArray(Float64, nObs)
-    maxVal = DataArray(Float64, nObs)
+    minVal = Array(Float64, nObs)
+    maxVal = Array(Float64, nObs)
     valsOverTimeRaw = asArr(valsOverTime, Float64, NaN)
     for ii=1:nObs
-        if !isnan(valsOverTimeRaw[ii, 1])
-            minVal[ii] = minimum(valsOverTimeRaw[ii, :])
-            maxVal[ii] = maximum(valsOverTimeRaw[ii, :])
-        end
+        minVal[ii] = minimum(valsOverTimeRaw[ii, :])
+        maxVal[ii] = maximum(valsOverTimeRaw[ii, :])
     end
     
     ## encapsulate in DataFrame
@@ -84,7 +82,7 @@ function getRange(valsOverTime::Timenum)
     df[:maxVal] = maxVal
 
     ## encapsulate in Timenum
-    valRange = Timenum(df, idx(valsOverTime))
+    valRange = Timematr(df, idx(valsOverTime))
 
     return valRange
 end
@@ -121,7 +119,7 @@ draw(SVG("dev_pics/singleUniverse_effFront.svg", 15cm, 10cm), p)
 ## apply strategy ##
 ####################
 
-allWgts, pfMoments = applyStrategy(estimatorType, strat, discRetsData)
+allWgts, pfMoments = applyStrategy(strat, estimatorType, discRetsData)
 
 allWgtsData =
     composeDataFrameMissingVals(allWgts, names(discRetsData)) |>
