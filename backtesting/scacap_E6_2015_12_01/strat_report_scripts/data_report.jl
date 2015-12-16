@@ -67,7 +67,8 @@ include(joinpath(homedir(),
 ###############
 
 ## load and process data
-include("../../dev/prepareData.jl")
+currDir = pwd()
+include(joinpath(currDir, "../../dev/prepareData.jl"))
 
 priceData, assetInfo, discRetsData = prepareData("../../financial_data/raw_data/")
 

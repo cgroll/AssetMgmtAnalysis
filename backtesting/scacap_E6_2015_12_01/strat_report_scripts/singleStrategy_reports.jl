@@ -97,7 +97,8 @@ invs = AssetMgmt.readInvestments("backtest_wgts/$currFileName")
 ###############
 
 ## load and process data
-include("../../dev/prepareData.jl")
+currDir = pwd()
+include(joinpath(currDir, "../../dev/prepareData.jl"))
 
 ## path needs to be relative to present directory
 priceData, assetInfo, discRetsData = prepareData("../../financial_data/raw_data/")

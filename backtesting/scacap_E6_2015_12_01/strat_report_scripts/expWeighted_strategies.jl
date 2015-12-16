@@ -85,7 +85,8 @@ estimatorType = AssetMgmt.ExpWeighted
 ###############
 
 ## load and process data
-include("../../dev/prepareData.jl")
+currDir = pwd()
+include(joinpath(currDir, "../../dev/prepareData.jl"))
 
 ## path needs to be relative to present directory
 priceData, assetInfo, discRetsData = prepareData("../../financial_data/raw_data/")
@@ -218,7 +219,7 @@ invs, pfMoments =
 ## save to file
 fname = "minSigma.csv"
 fullname = joinpath(wgtsFilePath, fname)
-AssetMgmt.writeInvestments(fullname, invs)
+AssetMgmt.writeInvestments(fullname, invs);
 
 
 
@@ -249,4 +250,4 @@ invs, pfMoments =
 ## save to file
 fname = "minSigmaThresFilter.csv"
 fullname = joinpath(wgtsFilePath, fname)
-AssetMgmt.writeInvestments(fullname, invs)
+AssetMgmt.writeInvestments(fullname, invs);
