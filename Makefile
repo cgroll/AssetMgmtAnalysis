@@ -67,6 +67,28 @@ $(addprefix $(PICS_DIR)/,$(PICS_FILE_NAMES)): $(PICS_DIR)/%-1.svg: $(PICS_SRC)/%
 	make data
 	docker run --rm -v $(PROJ_FULLPATH):$(DOCK_MOUNT) -v $(HOME)/research/julia:/home/jovyan/research/julia -w $(DOCK_MOUNT) $(DOCK_NAME) julia -e 'include("$<")'
 
+
+###############################################
+############## REPORT GENERATION
+###############################################
+
+REPORT_DIR := backtesting/scacap_E6_2015_12_01
+
+.PHONY: reports
+reports: $(REPORT_DIR)/report_output/expWeighted.html $(REPORT_DIR)/report_output/data_report.html
+
+$(REPORT_DIR)/report_output/expWeighted.html: $(REPORT_DIR)/strat_report_scripts/expWeighted_strategies.jl
+	docker run --rm -v $(PROJ_FULLPATH):$(DOCK_MOUNT) -v $(HOME)/research/julia:/home/jovyan/research/julia -w $(DOCK_MOUNT)/$(REPORT_DIR) $(DOCK_NAME) julia -e 'include("strat_report_scripts/expWeighted_strategies.jl")'
+
+$(REPORT_DIR)/report_output/data_report.html: $(REPORT_DIR)/strat_report_scripts/data_report.jl
+	docker run --rm -v $(PROJ_FULLPATH):$(DOCK_MOUNT) -v $(HOME)/research/julia:/home/jovyan/research/julia -w $(DOCK_MOUNT)/$(REPORT_DIR) $(DOCK_NAME) julia -e 'include("strat_report_scripts/data_report.jl")'
+
+.PHONY: singleReports
+singleReports:
+	docker run --rm -v $(PROJ_FULLPATH):$(DOCK_MOUNT) -v $(HOME)/research/julia:/home/jovyan/research/julia -w $(DOCK_MOUNT)/$(REPORT_DIR) $(DOCK_NAME) julia -e 'include("strat_report_scripts/singleStrategy_reports.jl")'
+
+
+
 # 
 
 # additional targets:
