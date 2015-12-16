@@ -1,9 +1,9 @@
-function prepareData()
+function prepareData(relPath::String)
     
     ## load scacap data
-    priceDataRaw = readTimedata("financial_data/raw_data/scacap_universeE6.csv")
-    assetInfoRaw = readtable("financial_data/raw_data/scacap_E6AssetInfo.csv")
-    
+    priceDataRaw = readTimedata("$relPath/scacap_universeE6.csv")
+    assetInfoRaw = readtable("$relPath/scacap_E6AssetInfo.csv")
+
     ## remove MIMUJPNN (DE000A0YBR53)
     ##-------------------------------
     
@@ -16,7 +16,23 @@ function prepareData()
     ## remove from data:
     dontRemove = names(priceDataRaw) .!= symbol(tobeRemovedName)
     priceData = priceDataRaw[:, dontRemove]
-    
+
+    ## get short names
+    ##----------------
+
+    ## in price data
+    nAss = size(priceData, 2)
+    shortNames = String[string(names(priceData)[ii]) for ii=1:nAss] |>
+    	x -> Symbol[split(x[ii], "_")[1] for ii=1:nAss]
+
+    names!(priceData.vals, shortNames)
+
+    ## in asset info
+    for ii=1:size(assetInfo, 1)
+        currLabel = assetInfo[ii, :AssetLabel]
+        assetInfo[ii, :AssetLabel] = split(currLabel, "_")[1]
+    end
+
     ## define risk mapping
     ##--------------------
     
@@ -54,4 +70,3 @@ function prepareData()
     return priceData, assetInfo, aggrDiscRetsData
 end
 
-priceData, assetInfo, discRetsData = prepareData()
