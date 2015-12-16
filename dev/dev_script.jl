@@ -13,8 +13,12 @@ using Dates
 include(joinpath(homedir(),
                  "research/julia/AssetMgmt/src/AssetMgmt.jl"))
 
+include(joinpath(homedir(), "research/julia/AssetMgmt/src/AssetMgmt.jl"))
+
 ## load and process data
 include("dev/prepareData.jl")
+
+relPath = "../../financial_data/raw_data/"
 
 ## puts the following variables into workspace
 ## - priceData
@@ -22,6 +26,121 @@ include("dev/prepareData.jl")
 ## - discRetsData
 
 nObs, nAss = size(priceData)
+
+##########################
+## filter TO strategies ##
+##########################
+
+## the estimator is common to all strategies in this script
+estimatorType = AssetMgmt.ExpWeighted
+
+## define (initial) strategy
+strat = AssetMgmt.MinSigma(0.0015)
+
+
+## define filter
+tovFilt = AssetMgmt.ThresHoldDeviance(0.4)
+
+## set strategy
+fullStrat = AssetMgmt.SeparateTurnover(strat, tovFilt)
+
+invs, pfMoments =
+    AssetMgmt.applyStrategy(fullStrat, estimatorType, discRetsData)
+
+inds = [1:5]
+dats = idx(invs)[inds]
+rets = asArr(discRetsData[dats, :], Float64)
+AssetMgmt.evolWgtsCore(asArr(invs[1:5, :], Float64), rets)
+
+currDate = idx(invs)[2]
+## estimate universe
+univ = AssetMgmt.estimate(estimatorType, discRetsData, currDate)
+
+pastInvInds = idx(invs) .< currDate
+invHistory = invs[pastInvInds, :]
+
+## get evening weights
+evolWgts(invHistory, discRetsData[currDate, :])
+optimizeWgts(fullStrat, univ, invs)
+
+## get turnover
+tov = AssetMgmt.turnover(invs, discRetsData)
+
+## get trading days
+tradInds = AssetMgmt.isTradingDay(invs, discRetsData)
+
+##################################################
+## test evolWgts: can be taken for unit test!!! ##
+##################################################
+
+initialVol = ones(4)
+initialPrices = 100*ones(4)
+nextPrices = [120 140 90 80]'
+
+## get current weights
+pfValue = sum(initialVol.*initialPrices)
+initialWgts = initialVol.*initialPrices ./ pfValue
+
+## get next period weights
+pfValueNext = sum(initialVol.*nextPrices)
+nextWgts = initialVol.*nextPrices ./ pfValueNext
+
+## get returns
+discRets = (nextPrices - initialPrices)./initialPrices
+
+nextWgtsWithReturns = AssetMgmt.evolWgtsCore((initialWgts[:])', (discRets[:])')
+
+@test_approx_eq nextWgtsWithReturns nextWgts'
+
+#########################################################
+## upper lines for evolWgts can be used as unit test!! ##
+#########################################################
+
+vols = ones(4, 4)
+prices = [100*ones(4)',
+          [120 140 90 80],
+          [130 110 100 90],
+          [120 150 110 110]]
+          
+
+## calculate weights
+wgts = vols.*prices./ sum(vols.*prices, 2)
+
+## get returns
+discRets = (prices[2:end, :] - prices[1:(end-1), :]) ./
+	prices[1:(end-1), :]
+
+eveningWgts = AssetMgmt.evolWgtsCore(wgts[1:3, :], discRets)
+
+@test_approx_eq wgts[2:end, :] eveningWgts
+
+## create investments
+nams = [:bli, :bla, :blub, :blo]
+dats = [Date(2010,1,3);
+        Date(2010,1,4);
+        Date(2010,1,5)]
+
+dfInvs = composeDataFrame(wgts[1:3, :], nams)
+testInvs = AssetMgmt.Investments(dfInvs, dats)
+
+testRets = Timematr(discRets, nams, dats)
+
+expTov = Timematr(zeros(Float64, 3), [:turnOver], dats)
+actTov = AssetMgmt.turnover(testInvs, testRets)
+@test expTov == actTov
+@test AssetMgmt.isTradingDay(testInvs, testRets) == [true; false; false]
+
+
+################
+## SeparateTO ##
+################
+
+tovFilt = AssetMgmt.ThresHoldDeviance(0.4)
+strat = AssetMgmt.MinSigma(0.0015)
+
+sepToStrat = AssetMgmt.SeparateTurnover(strat, tovFilt)
+
+
 
 ################
 ## unit tests ##
@@ -64,43 +183,6 @@ data = discRetsData
 
 ## for mu-sigma strategies also give back expected portfolio moments
 ## for each period
-function applyStrategy(strat::AssetMgmt.InitialStrategy,
-                       estimator::Type{AssetMgmt.ExpWeighted},
-                       data::Timematr)
-    
-    ## iterate over dates
-    allDats = idx(data)
-    nDats = length(allDats)
-    
-    ## preallocation
-    nObs, nAss = size(data)
-    allWgts = Array(Float64, nObs, nAss)
-    pfMoments = Array(Float64, nObs, 2)
-    modelEstimated = falses(nObs)
-    
-    for ii=1:nDats
-        thisDate = allDats[ii]
-        univ = AssetMgmt.estimate(estimatorType, data, thisDate)
-        if AssetMgmt.isDef(univ)
-            ## set estimation indicator to true
-            modelEstimated[ii] = true
-            
-            wgts = AssetMgmt.optimizeWgts(univ, strat)
-            allWgts[ii, :] = wgts
-
-            ## calculate portfolio moments
-            pfMu = AssetMgmt.getPMean(wgts[:], univ.Universe.mu)
-            pfSigma = sqrt(AssetMgmt.getPVar(wgts[:], univ.Universe.sigma))
-            pfMoments[ii, :] = [pfMu pfSigma]
-        end
-    end
-
-    ## remove non-estimatable dates
-    allWgts = allWgts[modelEstimated, :]
-    pfMoments = pfMoments[modelEstimated, :]
-
-    return allWgts, pfMoments
-end
 
 allWgts, pfMoments = applyStrategy(estimatorType, strat, data)
 
