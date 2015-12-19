@@ -22,9 +22,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="409.01526"
-     inkscape:cy="65.95806"
+     inkscape:zoom="3.959798"
+     inkscape:cx="640.85353"
+     inkscape:cy="32.734121"
      inkscape:document-units="px"
      inkscape:current-layer="g3317"
      showgrid="false"
@@ -578,11 +578,20 @@
            style="fill:#00c5b7;fill-opacity:0.72701685;stroke-width:0" /><polygon
            id="polygon3593"
            points="1832.7,160.4 1829.2,160.4 1829.2,74.195 1816.1,74.195 1816.1,70.758 1832.7,70.758 "
-           style="fill:#00c5b7;fill-opacity:0.72701685;stroke-width:0" /></g>      <path
-         style="fill:none;stroke:#000000;stroke-width:3.59263515;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
-         d="m 1521.9736,1005.8427 c 2.9952,1.1981 348.6436,-1.7971 348.6436,-1.7971"
-         id="path2985"
-         inkscape:connector-curvature="0" />
+           style="fill:#00c5b7;fill-opacity:0.72701685;stroke-width:0" /></g>      <g
+         id="g22104"
+         style="fill:#ffffff">
+        <path
+           style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.59263515000000000;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+           d="m 1870.5938,1002.25 c 0,0 -86.4032,0.7447 -173.1876,1.3438 -43.3921,0.2995 -86.8658,0.5751 -119.6874,0.6874 -16.4109,0.056 -30.1763,0.064 -39.9063,0.031 -4.865,-0.016 -8.7251,-0.05 -11.4063,-0.094 -1.3405,-0.022 -2.3782,-0.034 -3.0937,-0.063 -0.3578,-0.014 -0.6425,-0.049 -0.8125,-0.062 -0.085,-0.01 -0.1463,0 -0.1562,0 -0.01,-0 -0.017,-0.038 0.3124,0.094 l -1.3437,3.3125 c 0.3766,0.1506 0.4427,0.1399 0.5625,0.1562 0.1198,0.016 0.2173,0.021 0.3438,0.031 0.2529,0.02 0.5534,0.047 0.9374,0.062 0.7682,0.03 1.832,0.04 3.1876,0.062 2.711,0.044 6.5957,0.077 11.4687,0.094 9.746,0.033 23.4913,0.025 39.9063,-0.031 32.8298,-0.1123 76.3244,-0.388 119.7187,-0.6875 86.7886,-0.5991 173.1875,-1.3437 173.1875,-1.3437 l -0.031,-3.5938 z"
+           id="path2985"
+           inkscape:connector-curvature="0" />
+        <path
+           d="m 1851.7489,995.51373 23.6258,8.45617 -23.4757,8.8642 c 3.7181,-5.1455 3.6358,-12.1408 -0.1501,-17.32037 z"
+           style="fill-rule:evenodd;stroke-width:0.62500000000000000;stroke-linejoin:round;fill:#ffffff"
+           id="path22110"
+           inkscape:connector-curvature="0" />
+      </g>
       <path
          style="fill:#000000;fill-opacity:0;stroke:#00c5b7;stroke-width:3.18667006px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 1522.9848,1002.6406 c 33.386,-1.4369 67.9147,3.7716 97.5282,-13.65453 21.6645,-13.7296 28.7802,-40.53809 33.3853,-64.22975 5.3767,-27.81494 9.1187,-56.72338 21.6301,-82.26887 5.5563,-11.34474 15.1653,-21.82787 26.5076,-13.14271 12.3419,12.98599 14.0878,30.78303 17.241,47.06122 5.2639,32.80479 7.8327,68.47212 28.7932,95.78491 20.4239,21.6374 46.5377,24.3306 74.1145,27.4692 7.8468,1.01303 21.1494,0.73503 28.982,1.21573"
@@ -600,7 +609,7 @@
            inkscape:connector-curvature="0" />
       </g>
       <path
-         style="fill:none;stroke:#000000;stroke-width:3.59263515;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         style="fill:#ffffff;stroke:#ffffff;stroke-width:3.59263515000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 1691.0799,995.53977 c 0,19.05283 0,19.05283 0,19.05283"
          id="path8465"
          inkscape:connector-curvature="0" />
