@@ -1,0 +1,7 @@
+/nbconvert_html/
+/nbconvert_jl/
+/dev_pics/
+backtesting/scacap_E6_2015_12_01/report_output/
+backtesting/scacap_E6_2015_12_01/backtest_wgts/
+*.jl~
+*.md~
