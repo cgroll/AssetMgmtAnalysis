@@ -1,6 +1,7 @@
 /nbconvert_html/
 /nbconvert_jl/
 /dev_pics/
+/mu_sigma_graphics/d3/
 backtesting/scacap_E6_2015_12_01/report_output/
 backtesting/scacap_E6_2015_12_01/backtest_wgts/
 *.jl~
