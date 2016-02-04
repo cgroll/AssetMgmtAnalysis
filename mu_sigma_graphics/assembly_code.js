@@ -96,7 +96,7 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 	 function update(newData) {
 		  
 		  var momentDots = svg.selectAll("circle")
-				.data(newData);
+				.data(newData.values);
 		  
 		  // enter method
 		  momentDots.enter()
@@ -104,51 +104,28 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 				.call(position);
 		  
 		  // update method
-		  momentDots.transition().duration(1000).call(position);
+		  momentDots
+				.transition()
+				.duration(1000)
+				.call(position);
 		  
 		  // exit method
 		  momentDots.exit().remove();
-		  
+
+		  // change date label
+		  label.text(newData.key)
 	 }
-	 
-	 // var momentDots = update(groupedDates[0].values);
-	 
-	 // Start a transition that interpolates the data based on year.
-	 // momentDots.transition()
-	 //     .duration()
-	 // 	  .data(groupedDates[1].values)
-	 // 	  .call(position);
-	 
-	 // Tweens the entire chart by first tweening the year, and then the data.
-	 // For the interpolated data, the dots and label are redrawn.
-	 // function tweenDate() {
-	 // 	  var thisDateInd = d3.interpolateNumber(0, 2);
-	 // 	  return function(t) { displayDate(groupedDates[t].values); };
-	 // }
-	 
-	 // function displayDate(thisData) {
-	 // 	  momentDots.data(thisData, key).call(position);
-	 // 	  label.text(thisData.key);
-	 // }
-	 
-	 
-	 // // get data for current date
-	 // var currDateData = groupedDates[0].values;
-	 
-	 for ( var i = 0; i <= 2; ++i ) {
-		  // update(groupedDates[i].values);
-		  // update(groupedDates[i].values );
-		  setTimeout( function (){ update(groupedDates[i].values ) }, 2000);
-	 }
-	 // setInterval(function () {
-	 // dateInd = dateInd + 1;
-	 // update(groupedDates[dateInd].values);
-	 // }, 2000)
+
+	 var thisInd = 0;
+	 var interval = setInterval(function() {
+		  update(groupedDates[thisInd])
+        thisInd++; 
+        if(thisInd >= 3) clearInterval(interval);
+    }, 1000);
+
 })
 // render points subsequently
 // 
-// setTimeout( function (){ render(groupedDates[1].values ); }, 2000);
-// setTimeout( function (){ render(groupedDates[2].values ); }, 3000);
 
 
 // var effFront = svg.selectAll("effLine")
