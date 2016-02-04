@@ -1,6 +1,8 @@
 // define accessor functions
 function xAcc(d) { return +d.annual_sigmas; }
 function yAcc(d) { return +d.annual_mus; }
+function colorAcc(d) { return d.name; }
+
 
 // define margins
 var margin = {top: 20, right: 80, bottom: 30, left: 150};
@@ -22,6 +24,14 @@ var xScale = d3.scale.linear()
 var yScale = d3.scale.linear()
     .range([height, 0]);
 
+var colorScale = d3.scale.category20();
+
+// define line interpreter
+var line = d3.svg.line()
+	 .interpolate("basis")
+    .x(function(d) { return xScale(xAcc(d)); })
+    .y(function(d) { return yScale(yAcc(d)); });
+
 var xAxis = d3.svg.axis()
     .scale(xScale)
     .orient("bottom");
@@ -34,31 +44,25 @@ var yAxis = d3.svg.axis()
 // parse dates and remove missing values
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-var line = d3.svg.line()
-    .interpolate("basis")
-    .x(function(d) { return xAcc(d); })
-    .y(function(d) { return yAcc(d); });
-
 var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
+
+	 // determine axis from complete data
+	 xScale.domain(d3.extent(data, function(d) { return xAcc(d); }));
+	 yScale.domain(d3.extent(data, function(d) { return yAcc(d); }));
 	 
-	 // // transform dates to date format
-    // data.forEach(function(d) {
-    //     d.idx = parseDate(d.idx);
-    // });
-	 
-	 // group data by date
+	 // group data by date and portfolio type
 	 var groupedDates = d3.nest()
 		  .key(function(d) { return d.idx; })
+		  .key(function(d) { return d.pfType})
 		  .entries(data);
-    
-    xScale.domain(d3.extent(data, function(d) { return xAcc(d); }));
-	 yScale.domain(d3.extent(data, function(d) { return yAcc(d); }));
-    
+
+	 // append x axis
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
-    
+
+	 // append y axis with label
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
@@ -77,7 +81,7 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 		  .attr("y", height - 6)
 		  .text("Annualized volatility");
 	 
-	 // Add the year label; the value is set on transition.
+	 // Add the date label; the value is set on transition.
 	 var label = svg.append("text")
 		  .attr("class", "year label")
 		  .attr("text-anchor", "end")
@@ -92,51 +96,73 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 	 	  		.style("fill", "red")                            // <== and this one
 	 			.attr("r", 3.5);
 	 }
+
+	 // plot single day correctly
+	 var assetDots = svg.selectAll("asset circle")
+		  .data(groupedDates[0].values[0].values);
+
+	 // enter + update method asset points
+	 assetDots.enter()
+		  .append("circle")
+		  .attr("class", "asset circle")
+		  .call(position)
+		  .style("fill", function(d) { return colorScale(colorAcc(d)); });
+
+	 // enter + update global minimum
+	 var gmvDot = svg.selectAll("gmv circle")
+		  .data(groupedDates[0].values[1].values);
+
+	 gmvDot.enter()
+		  .append("circle")
+		  .attr("class", "gmv circle")
+		  .call(position);
+
+	 // enter + update max sharpe
+	 var maxSharpeDot = svg.selectAll("maxSharpe circle")
+		  .data(groupedDates[0].values[2].values);
+
+	 maxSharpeDot.enter()
+		  .append("circle")
+		  .attr("class", "maxSharpe circle")
+		  .call(position)
+		  .style("fill", "blue");
 	 
-	 function update(newData) {
-		  
-		  var momentDots = svg.selectAll("circle")
-				.data(newData.values);
-		  
-		  // enter method
-		  momentDots.enter()
-				.append("circle")
-				.call(position);
-		  
-		  // update method
-		  momentDots
-				.transition()
-				.duration(1000)
-				.call(position);
-		  
-		  // exit method
-		  momentDots.exit().remove();
+	 // enter + update method efficient frontier
+	 svg.append("path")
+		  .datum(groupedDates[0].values[3].values)
+		  .attr("class", "line")
+		  .attr("d", line);
 
-		  // change date label
-		  label.text(newData.key)
-	 }
+	 
+	 // function update(newData) {
+		  
+	 // 	  var momentDots = svg.selectAll("circle")
+	 // 			.data(newData.values[0].values);
+		  
+	 // 	  // enter method
+	 // 	  momentDots.enter()
+	 // 			.append("circle")
+	 // 			.call(position);
+		  
+	 // 	  // update method
+	 // 	  momentDots
+	 // 			.transition()
+	 // 			.duration(1000)
+	 // 			.call(position);
+		  
+	 // 	  // exit method
+	 // 	  momentDots.exit().remove();
 
-	 var thisInd = 0;
-	 var interval = setInterval(function() {
-		  update(groupedDates[thisInd])
-        thisInd++; 
-        if(thisInd >= 3) clearInterval(interval);
-    }, 1000);
+	 // 	  // change date label
+	 // 	  label.text(newData.key)
+	 // }
+
+	 // var endInd = groupedDates.length;
+	 // var thisInd = 0;
+	 // var interval = setInterval(function() {
+	 // 	  update(groupedDates[thisInd])
+    //     thisInd++; 
+    //     if(thisInd >= endInd) clearInterval(interval);
+    // }, 500);
 
 })
-// render points subsequently
-// 
-
-
-// var effFront = svg.selectAll("effLine")
-
-// effFront.datum(data)
-// 	  .append("g")
-//     .attr("class", "effLine")
-//     .append("path")
-//     .attr("class", "line")
-// 	  .attr("fill", "none")
-// 	  .attr('stroke', 'blue')
-// 	  .attr('stroke-width', 2)
-//     .attr("d", line(data));
-
