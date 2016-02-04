@@ -1,3 +1,5 @@
+stepDuration = 300;
+
 // define accessor functions
 function xAcc(d) { return +d.annual_sigmas; }
 function yAcc(d) { return +d.annual_mus; }
@@ -44,8 +46,8 @@ var yAxis = d3.svg.axis()
 // parse dates and remove missing values
 var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
-
+var momentData = d3.csv("allUnivInfo.csv", function (data) {
+	 
 	 // determine axis from complete data
 	 xScale.domain(d3.extent(data, function(d) { return xAcc(d); }));
 	 yScale.domain(d3.extent(data, function(d) { return yAcc(d); }));
@@ -55,13 +57,13 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 		  .key(function(d) { return d.idx; })
 		  .key(function(d) { return d.pfType})
 		  .entries(data);
-
+	 
 	 // append x axis
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
-
+	 
 	 // append y axis with label
     svg.append("g")
         .attr("class", "y axis")
@@ -97,72 +99,117 @@ var momentData = d3.csv("allUnivInfo_short.csv", function (data) {
 	 			.attr("r", 3.5);
 	 }
 
-	 // plot single day correctly
-	 var assetDots = svg.selectAll("asset circle")
-		  .data(groupedDates[0].values[0].values);
-
-	 // enter + update method asset points
-	 assetDots.enter()
-		  .append("circle")
-		  .attr("class", "asset circle")
-		  .call(position)
-		  .style("fill", function(d) { return colorScale(colorAcc(d)); });
-
-	 // enter + update global minimum
-	 var gmvDot = svg.selectAll("gmv circle")
-		  .data(groupedDates[0].values[1].values);
-
-	 gmvDot.enter()
-		  .append("circle")
-		  .attr("class", "gmv circle")
-		  .call(position);
-
-	 // enter + update max sharpe
-	 var maxSharpeDot = svg.selectAll("maxSharpe circle")
-		  .data(groupedDates[0].values[2].values);
-
-	 maxSharpeDot.enter()
-		  .append("circle")
-		  .attr("class", "maxSharpe circle")
-		  .call(position)
-		  .style("fill", "blue");
-	 
-	 // enter + update method efficient frontier
-	 svg.append("path")
+	 path = svg.append("path")
 		  .datum(groupedDates[0].values[3].values)
-		  .attr("class", "line")
-		  .attr("d", line);
+		  .attr('d', function(d){return line(d)})
+		  .attr("class", "effFront");
+	 
+	 function update(newData) {
+		  
+		  // plot single day correctly
+		  var assetDots = svg.selectAll(".asset_circle")
+				.data(newData.values[0].values);
+		  
+		  // enter method asset points
+		  assetDots.enter()
+				.append("circle")
+		  		.attr("class", "asset_circle")
+				.call(position)
+		  		.style("fill", function(d) { return colorScale(colorAcc(d)); });
+		  
+		  // update
+		  assetDots
+				.transition()
+				.duration(stepDuration)
+				.call(position)
+				.style("fill", function(d) { return colorScale(colorAcc(d)); });
+		  
+		  // exit
+		  assetDots.exit().remove();
+		  
+		  // enter global minimum
+		  var gmvDot = svg.selectAll(".gmv_circle")
+				.data(newData.values[1].values);
+		  
+		  // enter method global minimum
+		  gmvDot.enter()
+				.append("circle")
+				.attr("class", "gmv_circle")
+				.call(position);
+		  
+		  // update
+		  gmvDot
+				.transition()
+				.duration(stepDuration)
+				.call(position);
+		  
+		  // exit
+		  gmvDot.exit().remove();
+		  
+		  // // enter max sharpe
+		  // var maxSharpeDot = svg.selectAll(".maxSharpe_circle")
+		  // 		.data(newData.values[2].values);
+		  
+		  // maxSharpeDot.enter()
+		  // 		.append("circle")
+		  // 		.attr("class", "maxSharpe_circle")
+		  // 		.call(position)
+		  // 		.style("fill", "blue");
+		  
+		  // // update method
+		  // maxSharpeDot
+		  // 		.transition()
+		  // 		.duration(stepDuration)
+		  // 		.call(position)
+		  // 		.style("fill", "blue");
+		  
+		  // // exit method
+		  // maxSharpeDot.exit().remove();
+		  
+		  // efficient frontier
+		  var effFrontLine = svg.selectAll(".effFront")
+				.data([newData.values[3].values])
 
+		  // update
+		  effFrontLine
+				.transition()
+				.duration(stepDuration)
+				.attr("d", line);
+
+		  	  // change date label
+	 	  label.text(newData.key)
+
+	 }
 	 
 	 // function update(newData) {
-		  
+	 
 	 // 	  var momentDots = svg.selectAll("circle")
 	 // 			.data(newData.values[0].values);
-		  
+	 
 	 // 	  // enter method
 	 // 	  momentDots.enter()
 	 // 			.append("circle")
 	 // 			.call(position);
-		  
+	 
 	 // 	  // update method
 	 // 	  momentDots
 	 // 			.transition()
 	 // 			.duration(1000)
 	 // 			.call(position);
-		  
+	 
 	 // 	  // exit method
 	 // 	  momentDots.exit().remove();
-
+	 
 	 // 	  // change date label
 	 // 	  label.text(newData.key)
 	 // }
-
-	 // var endInd = groupedDates.length;
-	 // var thisInd = 0;
-	 // var interval = setInterval(function() {
-	 // 	  update(groupedDates[thisInd])
-    //     thisInd++; 
-    //     if(thisInd >= endInd) clearInterval(interval);
-    // }, 500);
-
+	 
+	 var endInd = groupedDates.length;
+	 var thisInd = 0;
+	 var interval = setInterval(function() {
+	 	  update(groupedDates[thisInd])
+        thisInd++; 
+        if(thisInd >= endInd) clearInterval(interval);
+    }, stepDuration);
+	 
 })
